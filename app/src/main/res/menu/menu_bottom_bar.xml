@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_home"
+        android:title="@string/home"
+        android:icon="@drawable/ic_home_black_24dp"/>
+    <item android:id="@+id/menu_near"
+        android:title="@string/near"
+        android:icon="@drawable/ic_near_me_black_24dp"/>
+    <item android:id="@+id/menu_browser"
+        android:title="@string/browser"
+        android:icon="@drawable/ic_widgets_black_24dp"/>
+    <item android:id="@+id/menu_my_page"
+        android:title="@string/my_page"
+        android:icon="@drawable/ic_person_black_24dp"/>
+</menu>
