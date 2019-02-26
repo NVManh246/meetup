@@ -1,5 +1,6 @@
 package com.rikkei.meetup.screen.signup;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.screen.login.LoginFragment;
+import com.rikkei.meetup.screen.profile.ProfileFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,7 +119,14 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
 
     @Override
     public void navigationToProfile() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.frame_my_page, ProfileFragment.newInstance())
+                .commit();
+    }
 
+    @Override
+    public Context getViewContext() {
+        return getContext();
     }
 
     private void setEnableButtonRegister(String email, String password) {

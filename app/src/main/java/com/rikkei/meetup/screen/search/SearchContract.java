@@ -12,6 +12,6 @@ public interface SearchContract {
     }
 
     interface Presenter {
-        void getEventsByKeyword(String keyword, int pageIndex, int pageSize);
+        void getEventsByKeyword(String token, String keyword, int pageIndex, int pageSize);
     }
 }

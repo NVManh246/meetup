@@ -1,5 +1,7 @@
 package com.rikkei.meetup.screen.signup;
 
+import android.content.Context;
+
 public interface RegisterContract {
     interface View {
         void showProgress();
@@ -8,6 +10,7 @@ public interface RegisterContract {
         void showErrorPassword();
         void showError();
         void navigationToProfile();
+        Context getViewContext();
     }
 
     interface Presenter {

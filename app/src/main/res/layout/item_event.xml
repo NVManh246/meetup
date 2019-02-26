@@ -24,6 +24,14 @@
             android:src="@drawable/global"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/image_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="@dimen/dp_5"/>
+
         <TextView
             android:id="@+id/text_name_event"
             android:layout_width="0dp"

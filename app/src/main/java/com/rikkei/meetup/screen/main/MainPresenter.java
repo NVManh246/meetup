@@ -1,9 +1,10 @@
-package com.rikkei.meetup.screen.home.popular;
+package com.rikkei.meetup.screen.main;
 
-import com.rikkei.meetup.data.model.event.EventsResponse;
+import com.rikkei.meetup.data.model.venue.VenuesResponse;
 import com.rikkei.meetup.data.networking.ApiUtils;
 import com.rikkei.meetup.data.source.remote.EventsRemoteDataSource;
 import com.rikkei.meetup.data.source.repository.EventsRepository;
+import com.rikkei.meetup.ultis.StringUtils;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -11,33 +12,36 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class PopularPresenter implements PopularContract.Presenter {
+public class MainPresenter implements MainContract.Presenter {
 
-    private PopularContract.View mView;
+    private MainContract.View mView;
     private EventsRepository mEventsRepository;
     private CompositeDisposable mCompositeDisposable;
 
-    public PopularPresenter(PopularContract.View view) {
+    public MainPresenter(MainContract.View view) {
         mView = view;
-        mEventsRepository
-                = EventsRepository.getInstance(EventsRemoteDataSource.getInstance(ApiUtils.getApi()));
+        mEventsRepository = EventsRepository
+                .getInstance(EventsRemoteDataSource.getInstance(ApiUtils.getApi()));
         mCompositeDisposable = new CompositeDisposable();
     }
 
     @Override
-    public void getEvents(String token, int pageIndex, int pageSize) {
-        Disposable disposable = mEventsRepository.getListEvents(token, pageIndex, pageSize)
+    public void checkTokenExpired(String token) {
+        Disposable disposable = mEventsRepository.getVenuesFollowed(token)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<EventsResponse>() {
+                .subscribe(new Consumer<VenuesResponse>() {
                     @Override
-                    public void accept(EventsResponse eventsResponse) throws Exception {
-                        mView.showEvents(eventsResponse.getListEvents().getEvents());
+                    public void accept(VenuesResponse venuesResponse) throws Exception {
+                        if(venuesResponse.getStatus() == 0) {
+                            mView.showResult();
+                            StringUtils.saveToken(mView.getViewContext(), null, null);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        mView.showError();
+                        System.out.println(throwable.toString());
                     }
                 });
         mCompositeDisposable.add(disposable);

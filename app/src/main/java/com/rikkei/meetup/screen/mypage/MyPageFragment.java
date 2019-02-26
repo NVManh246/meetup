@@ -9,9 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rikkei.meetup.R;
+import com.rikkei.meetup.screen.profile.ProfileFragment;
 import com.rikkei.meetup.screen.signup.RegisterFragment;
+import com.rikkei.meetup.ultis.StringUtils;
 
 public class MyPageFragment extends Fragment {
+
+    private String mToken;
 
     public static MyPageFragment newInstance() {
         MyPageFragment fragment = new MyPageFragment();
@@ -28,8 +32,15 @@ public class MyPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.frame_my_page, RegisterFragment.newInstance())
-                .commit();
+        mToken = StringUtils.getToken(getContext());
+        if(mToken == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frame_my_page, RegisterFragment.newInstance())
+                    .commit();
+        } else {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.frame_my_page, ProfileFragment.newInstance())
+                    .commit();
+        }
     }
 }

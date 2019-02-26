@@ -16,6 +16,13 @@
         android:src="@drawable/global"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/image_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <TextView
         android:id="@+id/text_name_event"
         android:layout_width="0dp"
@@ -25,7 +32,6 @@
         app:layout_constraintRight_toRightOf="@+id/image_event"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textStyle="bold"
         android:textSize="@dimen/sp_16"
         android:textColor="@color/color_mine_shaft"/>
 

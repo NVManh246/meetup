@@ -3,6 +3,7 @@ package com.rikkei.meetup.data.model.event;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Event implements Parcelable {
@@ -185,4 +186,7 @@ public class Event implements Parcelable {
         dest.writeInt(mMyStatus);
         dest.writeParcelable(mVenue, flags);
     }
+
+    public static final int STATUS_GOING = 1;
+    public static final int STATUS_WENT = 2;
 }

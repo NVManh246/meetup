@@ -25,6 +25,7 @@ public interface ApiClient {
 
     @GET("listPopularEvents")
     Flowable<EventsResponse> getListEvents(
+            @Header("Authorization") String token,
             @Query("pageIndex") int pageIndex,
             @Query("pageSize") int pageSize
     );
@@ -34,16 +35,21 @@ public interface ApiClient {
 
     @GET("listEventsByCategory")
     Flowable<EventsResponse> getEventsByCategory(
+            @Header("Authorization") String token,
             @Query("category_id") int categoryId,
             @Query("pageIndex") int pageIndex,
             @Query("pageSize") int pageSize
     );
 
     @GET("listEventsByCategory")
-    Flowable<EventsResponse> getEventsByCategory(@Query("category_id") int categoryId);
+    Flowable<EventsResponse> getEventsByCategory(
+            @Header("Authorization") String token,
+            @Query("category_id") int categoryId
+    );
 
     @GET("search")
     Flowable<EventsResponse> getEventsByKeyword(
+            @Header("Authorization") String token,
             @Query("keyword") String keyword,
             @Query("pageIndex") int pageIndex,
             @Query("pageSize") int pageSize

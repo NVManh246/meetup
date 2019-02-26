@@ -21,6 +21,7 @@ import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventContract;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventPresenter;
+import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,8 @@ public class DateEventFragment extends Fragment
     private int mCategoryId;
     private ListEventContract.Presenter mPresenter;
 
+    private String mToken;
+
     public static DateEventFragment newInstance(int categoryId) {
         Bundle args = new Bundle();
         args.putInt(ListEventActivity.BUNDLE_CATEGORY_ID, categoryId);
@@ -68,7 +71,8 @@ public class DateEventFragment extends Fragment
         setupRecyclerEvents();
         mCategoryId = getArguments().getInt(ListEventActivity.BUNDLE_CATEGORY_ID);
         mPresenter = new ListEventPresenter(this);
-        mPresenter.getEventsByCategory(mCategoryId, -1, -1);
+        mToken = StringUtils.getToken(getContext());
+        mPresenter.getEventsByCategory(mToken, mCategoryId, -1, -1);
     }
 
     private void setupRecyclerEvents() {

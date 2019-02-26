@@ -2,8 +2,8 @@ package com.rikkei.meetup.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +65,7 @@ public class EventSmallAdapter extends RecyclerView.Adapter<EventSmallAdapter.Vi
         @BindView(R.id.text_name_event) TextView mTextName;
         @BindView(R.id.text_date_event) TextView mTextDate;
         @BindView(R.id.text_joiner) TextView mTextJoinerCount;
+        @BindView(R.id.image_status) ImageView mImageStatus;
 
         public ViewHolder(@NonNull final View itemView, Context context,
                           List<Event> events, OnItemClickListener listener) {
@@ -90,6 +91,18 @@ public class EventSmallAdapter extends RecyclerView.Adapter<EventSmallAdapter.Vi
             } catch (ParseException e) {
             }
             mTextJoinerCount.setText(String.valueOf(event.getGoingCount()));
+
+            switch (event.getMyStatus()) {
+                case 0:
+                    mImageStatus.setImageResource(View.VISIBLE);
+                    break;
+                case Event.STATUS_GOING:
+                    mImageStatus.setImageResource(R.drawable.ic_star_red_24dp);
+                    break;
+                case Event.STATUS_WENT:
+                    mImageStatus.setImageResource(R.drawable.ic_star_star_24dp);
+                    break;
+            }
         }
     }
 

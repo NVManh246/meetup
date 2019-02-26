@@ -1,7 +1,11 @@
 package com.rikkei.meetup.screen.search;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.data.model.event.EventsResponse;
+import com.rikkei.meetup.data.networking.ApiClient;
 import com.rikkei.meetup.data.networking.ApiUtils;
 import com.rikkei.meetup.data.source.remote.EventsRemoteDataSource;
 import com.rikkei.meetup.data.source.repository.EventsRepository;
@@ -13,6 +17,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchPresenter implements SearchContract.Presenter {
 
@@ -28,8 +35,8 @@ public class SearchPresenter implements SearchContract.Presenter {
     }
 
     @Override
-    public void getEventsByKeyword(String keyword, int pageIndex, int pageSize) {
-        Disposable disposable = mEventsRepository.getEventsByKeyword(keyword, pageIndex, pageSize)
+    public void getEventsByKeyword(String token, String keyword, int pageIndex, int pageSize) {
+        Disposable disposable = mEventsRepository.getEventsByKeyword(token, keyword, pageIndex, pageSize)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<EventsResponse>() {

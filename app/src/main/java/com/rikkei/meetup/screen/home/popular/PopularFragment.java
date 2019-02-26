@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.common.EndLessScrollListener;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
+import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class PopularFragment extends Fragment implements PopularContract.View,
     private PopularContract.Presenter mPresenter;
     private int mPageIndex = FIRST_PAGE_INDEX;
     private int mPageSize = PAGE_SIZE_DEFAULT;
+    private String mToken;
 
     public static PopularFragment newInstance() {
         PopularFragment fragment = new PopularFragment();
@@ -57,8 +60,8 @@ public class PopularFragment extends Fragment implements PopularContract.View,
         initView(view);
         setupRecyclerEvent();
         mPresenter = new PopularPresenter(this);
-        mPresenter.getEvents(mPageIndex, mPageSize);
-
+        mToken = StringUtils.getToken(getContext());
+        mPresenter.getEvents(mToken, mPageIndex, mPageSize);
     }
 
     private void initView(View view) {
@@ -77,7 +80,7 @@ public class PopularFragment extends Fragment implements PopularContract.View,
         mRecyclerEvent.addOnScrollListener(new EndLessScrollListener() {
             @Override
             public boolean onLoadMore() {
-                mPresenter.getEvents(++mPageIndex, mPageSize);
+                mPresenter.getEvents(mToken, ++mPageIndex, mPageSize);
                 return true;
             }
         });
@@ -105,8 +108,9 @@ public class PopularFragment extends Fragment implements PopularContract.View,
 
     @Override
     public void onRefresh() {
+        mToken = StringUtils.getToken(getContext());
         mPageIndex = FIRST_PAGE_INDEX;
         mEventAdapter.clearAll();
-        mPresenter.getEvents(mPageIndex, mPageSize);
+        mPresenter.getEvents(mToken, mPageIndex, mPageSize);
     }
 }

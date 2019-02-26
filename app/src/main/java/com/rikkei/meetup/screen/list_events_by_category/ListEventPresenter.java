@@ -36,9 +36,9 @@ public class ListEventPresenter implements ListEventContract.Presenter {
     }
 
     @Override
-    public void getEventsByCategory(int categoryId, int pageIndex, int pageSize) {
+    public void getEventsByCategory(String token, int categoryId, int pageIndex, int pageSize) {
         if(pageIndex == -1 && pageSize == -1) {
-            Disposable disposable = mEventsRepository.getEventsByCategory(categoryId)
+            Disposable disposable = mEventsRepository.getEventsByCategory(token, categoryId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(new Consumer<EventsResponse>() {
@@ -54,7 +54,7 @@ public class ListEventPresenter implements ListEventContract.Presenter {
                     });
             mCompositeDisposable.add(disposable);
         } else {
-            Disposable disposable = mEventsRepository.getEventsByCategory(categoryId, pageIndex, pageSize)
+            Disposable disposable = mEventsRepository.getEventsByCategory(token, categoryId, pageIndex, pageSize)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(new Consumer<EventsResponse>() {

@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +22,7 @@ import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.common.EndLessScrollListener;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
+import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     private static final int SPACING = 40;
     private static final int PAGE_SIZE_DEFAULT = 10;
     private static final int FIRST_PAGE_INDEX = 1;
+    private String mToken;
 
     @BindView(R.id.edit_search)
     EditText mEditSearch;
@@ -113,7 +116,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     public void onRefresh() {
         mPageIndex = FIRST_PAGE_INDEX;
         mEventAdapter.clearAll();
-        mPresenter.getEventsByKeyword(mKeyword, mPageIndex, mPageSize);
+        mPresenter.getEventsByKeyword(mToken, mKeyword, mPageIndex, mPageSize);
     }
 
     private void setupRecyclerEvent() {
@@ -125,13 +128,14 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         mRecyclerEvent.addOnScrollListener(new EndLessScrollListener() {
             @Override
             public boolean onLoadMore() {
-                mPresenter.getEventsByKeyword(mKeyword, ++mPageIndex, mPageSize);
+                mPresenter.getEventsByKeyword(mToken, mKeyword, ++mPageIndex, mPageSize);
                 return true;
             }
         });
     }
 
     private void search() {
+        mToken = StringUtils.getToken(this);
         mEditSearch.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -139,7 +143,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
                     mKeyword = mEditSearch.getText().toString();
                     mPageIndex = FIRST_PAGE_INDEX;
                     mEventAdapter.clearAll();
-                    mPresenter.getEventsByKeyword(mKeyword, mPageIndex, mPageSize);
+                    mPresenter.getEventsByKeyword(mToken, mKeyword, mPageIndex, mPageSize);
                     hideSoftKeyboard();
                 }
                 return false;
