@@ -1,6 +1,7 @@
 package com.rikkei.meetup.data.networking;
 
 import com.rikkei.meetup.data.model.event.EventsResponse;
+import com.rikkei.meetup.data.model.genre.GenresResponse;
 import com.rikkei.meetup.data.model.news.NewsResponse;
 
 import io.reactivex.Flowable;
@@ -20,4 +21,7 @@ public interface ApiClient {
             @Query("pageIndex") int pageIndex,
             @Query("pageSize") int pageSize
     );
+
+    @GET("listCategories")
+    Flowable<GenresResponse> getListGenres();
 }

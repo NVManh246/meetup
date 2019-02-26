@@ -1,6 +1,7 @@
 package com.rikkei.meetup.data.source.remote;
 
 import com.rikkei.meetup.data.model.event.EventsResponse;
+import com.rikkei.meetup.data.model.genre.GenresResponse;
 import com.rikkei.meetup.data.networking.ApiClient;
 import com.rikkei.meetup.data.source.EventsDataSource;
 
@@ -25,5 +26,10 @@ public class EventsRemoteDataSource implements EventsDataSource.EventsRemoteData
     @Override
     public Flowable<EventsResponse> getListEvents(int pageIndex, int pageSize) {
         return mApiClient.getListEvents(pageIndex, pageSize);
+    }
+
+    @Override
+    public Flowable<GenresResponse> getListGenres() {
+        return mApiClient.getListGenres();
     }
 }
