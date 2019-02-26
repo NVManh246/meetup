@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/colorPrimary"
+        app:title="@string/register"
+        app:titleTextColor="@android:color/white"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"/>
+
+    <TextView
+        android:id="@+id/text_logo_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/guide_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/dp_30"
+        android:textSize="@dimen/sp_50"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"/>
+
+    <EditText
+        android:id="@+id/edit_fullname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/text_logo_signup"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="@dimen/dp_30"
+        android:hint="@string/fullname"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:padding="@dimen/dp_20"
+        android:textSize="@dimen/dp_20"
+        android:textColor="@color/color_mine_shaft"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"/>
+
+    <EditText
+        android:id="@+id/edit_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/edit_fullname"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:padding="@dimen/dp_20"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:hint="@string/email"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/color_mine_shaft"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"/>
+
+
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/edit_email"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:padding="@dimen/dp_20"
+        android:hint="@string/password"
+        android:textSize="@dimen/sp_20"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColor="@color/color_mine_shaft"
+        android:inputType="textPassword"
+        android:maxLines="1"/>
+
+    <Button
+        android:id="@+id/button_register"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_password"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="@dimen/dp_30"
+        android:text="@string/register"
+        android:textAllCaps="false"
+        android:padding="@dimen/dp_15"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@android:color/white"
+        android:background="@drawable/background_button_login"
+        android:enabled="false"/>
+
+    <ProgressBar
+        android:id="@+id/progress_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@+id/button_register"
+        app:layout_constraintRight_toRightOf="@+id/button_register"
+        app:layout_constraintTop_toTopOf="@+id/button_register"
+        app:layout_constraintBottom_toBottomOf="@+id/button_register"
+        android:visibility="gone"
+        android:elevation="@dimen/dp_8"
+        android:indeterminateTint="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/text_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/already_a_member"
+        app:layout_constraintTop_toBottomOf="@+id/button_register"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="@dimen/sp_18"
+        android:layout_margin="@dimen/dp_10"
+        android:textColor="@color/color_mine_shaft"/>
+
+</android.support.constraint.ConstraintLayout>
