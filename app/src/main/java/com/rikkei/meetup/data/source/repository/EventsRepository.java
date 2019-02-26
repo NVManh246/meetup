@@ -69,4 +69,9 @@ public class EventsRepository implements EventsDataSource.EventsRemoteDataSource
     public Flowable<VenuesResponse> getVenuesFollowed(String token) {
         return mRemoteDataSource.getVenuesFollowed(token);
     }
+
+    @Override
+    public Flowable<EventsResponse> getNearEvents(String token, int radius, String geoLong, String geoLat) {
+        return mRemoteDataSource.getNearEvents(token, radius, geoLong, geoLat);
+    }
 }

@@ -18,5 +18,6 @@ public interface EventsDataSource {
         Flowable<GenresResponse> getListGenres();
         Flowable<EventsResponse> getMyEvents(String token, int status);
         Flowable<VenuesResponse> getVenuesFollowed(String token);
+        Flowable<EventsResponse> getNearEvents(String token, int radius, String geoLong, String geoLat);
     }
 }

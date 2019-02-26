@@ -52,4 +52,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="token_expired">Token is expired, please login again!</string>
+    <string name="setting">Setting</string>
+    <string name="please_grant_permission">Please grant permission to use the LOCATION to experience this functionality</string>
 </resources>

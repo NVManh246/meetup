@@ -81,6 +81,17 @@ public class StringUtils {
         SharedPreferences sharedPreferences
                 = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
         String email = sharedPreferences.getString(KEY_EMAIL, null);
-        return email.split("@")[0];
+        return email != null ? email.split("@")[0] : null;
+    }
+
+    public static String getDistance(int meter) {
+        StringBuilder result = new StringBuilder();
+        if(meter < 1000) {
+            result.append(meter).append("m");
+        } else {
+            float kilometer = (float) meter/1000;
+            result.append(Math.round(kilometer * 10)/10).append("km");
+        }
+        return result.toString();
     }
 }

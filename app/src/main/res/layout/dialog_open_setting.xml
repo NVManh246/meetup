@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/text_alert"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        android:textSize="@dimen/sp_18"
+        android:textColor="@color/color_mine_shaft"
+        android:text="@string/please_grant_permission"
+        android:padding="@dimen/dp_15"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_alert"
+        android:background="@color/colorPrimaryDark"/>
+
+    <Button
+        android:id="@+id/button_setting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/setting"
+        app:layout_constraintTop_toBottomOf="@+id/text_alert"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="@dimen/sp_18"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/background_button_profile"
+        android:padding="@dimen/dp_10"/>
+
+</android.support.constraint.ConstraintLayout>
