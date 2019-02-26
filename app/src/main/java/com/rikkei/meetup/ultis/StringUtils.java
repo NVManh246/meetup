@@ -71,6 +71,6 @@ public class StringUtils {
     public static String getToken(Context context) {
         SharedPreferences sharedPreferences
                 = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_TOKEN, null);
+        return "Bearer " + sharedPreferences.getString(KEY_TOKEN, null);
     }
 }

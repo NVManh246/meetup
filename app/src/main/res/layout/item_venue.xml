@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:padding="@dimen/dp_10">
+
+    <TextView
+        android:id="@+id/text_des"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="USA"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="@drawable/background_text_circle"/>
+
+    <TextView
+        android:id="@+id/text_name_venue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="ashd asjdla jkdsjlaks jkasd"
+        app:layout_constraintTop_toTopOf="@id/text_des"
+        app:layout_constraintLeft_toRightOf="@+id/text_des"
+        app:layout_constraintRight_toRightOf="parent"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_18"
+        android:textColor="@color/color_mine_shaft"
+        android:textStyle="bold"
+        android:layout_marginLeft="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/text_address_venue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="ashd asjdla jkdsjlaks jkasd"
+        app:layout_constraintBottom_toBottomOf="@+id/text_des"
+        app:layout_constraintLeft_toRightOf="@+id/text_des"
+        app:layout_constraintRight_toRightOf="parent"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_18"
+        android:textColor="@color/color_mine_shaft"
+        android:layout_marginLeft="@dimen/dp_10"/>
+
+</android.support.constraint.ConstraintLayout>

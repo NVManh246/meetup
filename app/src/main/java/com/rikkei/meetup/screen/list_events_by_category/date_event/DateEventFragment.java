@@ -25,8 +25,6 @@ import com.rikkei.meetup.screen.list_events_by_category.ListEventPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 public class DateEventFragment extends Fragment
         implements ListEventContract.View, EventSmallAdapter.OnItemClickListener {
 
