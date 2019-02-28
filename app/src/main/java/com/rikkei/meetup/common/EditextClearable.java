@@ -13,6 +13,8 @@ import com.rikkei.meetup.R;
 public class EditextClearable extends android.support.v7.widget.AppCompatEditText {
 
     private Drawable mImageClear = getResources().getDrawable(R.drawable.ic_clear_black_24dp);
+    private boolean mActionDown;
+    private boolean mActionUp;
 
     public EditextClearable(Context context) {
         super(context);
@@ -31,22 +33,34 @@ public class EditextClearable extends android.support.v7.widget.AppCompatEditTex
 
     private void init() {
         mImageClear.setBounds(0, 0,
-                mImageClear.getIntrinsicWidth(), mImageClear. getIntrinsicHeight());
+                mImageClear.getIntrinsicWidth(), mImageClear.getIntrinsicHeight());
 
         handleClearButton();
 
         this.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(getCompoundDrawables()[2] == null) {
+                if (getCompoundDrawables()[2] == null) {
                     return false;
                 }
-                if(event.getAction() != MotionEvent.ACTION_UP) {
-                    return false;
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (event.getX() > getWidth() - getPaddingRight() - mImageClear.getIntrinsicWidth()) {
+                        mActionDown = true;
+                    }
                 }
-                if(event.getX() > getWidth() - getPaddingRight() - mImageClear.getIntrinsicWidth()) {
-                    setText("");
-                    handleClearButton();
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getX() > getWidth() - getPaddingRight() - mImageClear.getIntrinsicWidth()
+                            && event.getY() < getPaddingTop() + mImageClear.getIntrinsicWidth()) {
+                        mActionUp = true;
+                    }
+
+                    if (mActionDown && mActionUp) {
+                        setText("");
+                        handleClearButton();
+                    }
+
+                    mActionDown = false;
+                    mActionUp = false;
                 }
                 return false;
             }
@@ -71,10 +85,12 @@ public class EditextClearable extends android.support.v7.widget.AppCompatEditTex
     }
 
     private void handleClearButton() {
-        if(getText().toString().equals("")) {
-            setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], null, getCompoundDrawables()[3]);
+        if (getText().toString().equals("")) {
+            setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1],
+                    null, getCompoundDrawables()[3]);
         } else {
-            setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1], mImageClear, getCompoundDrawables()[3]);
+            setCompoundDrawables(getCompoundDrawables()[0], getCompoundDrawables()[1],
+                    mImageClear, getCompoundDrawables()[3]);
         }
     }
 }

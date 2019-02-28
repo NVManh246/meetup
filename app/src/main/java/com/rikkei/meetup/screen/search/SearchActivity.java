@@ -10,11 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,10 +36,14 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     private static final int PAGE_SIZE_DEFAULT = 10;
     private static final int FIRST_PAGE_INDEX = 1;
 
-    @BindView(R.id.edit_search) EditText mEditSearch;
-    @BindView(R.id.swipe_refresh_event) SwipeRefreshLayout mRefreshLayout;
-    @BindView(R.id.recycler_event) RecyclerView mRecyclerEvent;
-    @BindView(R.id.text_lable_msg_result) TextView mTextMsg;
+    @BindView(R.id.edit_search)
+    EditText mEditSearch;
+    @BindView(R.id.swipe_refresh_event)
+    SwipeRefreshLayout mRefreshLayout;
+    @BindView(R.id.recycler_event)
+    RecyclerView mRecyclerEvent;
+    @BindView(R.id.text_lable_msg_result)
+    TextView mTextMsg;
 
     private List<Event> mEvents;
     private EventAdapter mEventAdapter;
@@ -76,12 +77,12 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void showEvents(List<Event> events) {
-        if(mRecyclerEvent.getVisibility() == View.GONE) {
+        if (mRecyclerEvent.getVisibility() == View.GONE) {
             mRecyclerEvent.setVisibility(View.VISIBLE);
             mTextMsg.setVisibility(View.GONE);
         }
         mEventAdapter.insertData(events);
-        if(mRefreshLayout.isRefreshing()) {
+        if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
         }
     }
@@ -93,7 +94,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void noResultSearching() {
-        if(mEvents.size() == 0) {
+        if (mEvents.size() == 0) {
             mRecyclerEvent.setVisibility(View.GONE);
             mTextMsg.setVisibility(View.VISIBLE);
         } else {
@@ -134,7 +135,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         mEditSearch.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     mKeyword = mEditSearch.getText().toString();
                     mPageIndex = FIRST_PAGE_INDEX;
                     mEventAdapter.clearAll();
@@ -146,7 +147,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         });
     }
 
-    private void hideSoftKeyboard(){
+    private void hideSoftKeyboard() {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);

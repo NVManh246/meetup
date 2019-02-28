@@ -16,6 +16,7 @@ import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.GenreAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.data.model.genre.Genre;
+import com.rikkei.meetup.screen.list_events_by_category.ListEventActivity;
 import com.rikkei.meetup.screen.search.SearchActivity;
 
 import java.util.ArrayList;
@@ -25,14 +26,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-public class BrowserFragment extends Fragment implements BrowserContract.View {
+public class BrowserFragment extends Fragment implements BrowserContract.View,
+        GenreAdapter.OnItemClickListener {
 
     private static final int SPACING = 20;
 
     private Unbinder mUnbinder;
     @BindView(R.id.recycler_genre) RecyclerView mRecyclerGenre;
-
     private List<Genre> mGenres;
     private GenreAdapter mGenreAdapter;
 
@@ -73,7 +73,7 @@ public class BrowserFragment extends Fragment implements BrowserContract.View {
 
     private void setupRecyclerGenre() {
         mGenres = new ArrayList<>();
-        mGenreAdapter = new GenreAdapter(mGenres);
+        mGenreAdapter = new GenreAdapter(mGenres, this);
         mRecyclerGenre.setAdapter(mGenreAdapter);
         mRecyclerGenre.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerGenre.addItemDecoration(new CustomItemDecoration(SPACING));
@@ -87,5 +87,11 @@ public class BrowserFragment extends Fragment implements BrowserContract.View {
     @Override
     public void showError() {
         Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = ListEventActivity.getListEventIntent(getContext(), mGenres.get(position));
+        startActivity(intent);
     }
 }

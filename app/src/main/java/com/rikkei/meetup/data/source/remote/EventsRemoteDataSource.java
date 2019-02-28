@@ -34,6 +34,11 @@ public class EventsRemoteDataSource implements EventsDataSource.EventsRemoteData
     }
 
     @Override
+    public Flowable<EventsResponse> getEventsByCategory(int categoryId) {
+        return mApiClient.getEventsByCategory(categoryId);
+    }
+
+    @Override
     public Flowable<EventsResponse> getEventsByKeyword(String keyword, int pageIndex, int pageSize) {
         return mApiClient.getEventsByKeyword(keyword, pageIndex, pageSize);
     }

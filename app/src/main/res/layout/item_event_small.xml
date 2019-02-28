@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/layout_event"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_250"
+    android:layout_height="@dimen/dp_180"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/image_event"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_120"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/global"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/text_name_event"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_event"
+        app:layout_constraintRight_toRightOf="@+id/image_event"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/color_mine_shaft"/>
+
+    <ImageView
+        android:id="@+id/image_date"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:src="@drawable/ic_date_range_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/text_date_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/image_date"
+        app:layout_constraintBottom_toBottomOf="@+id/image_date"
+        app:layout_constraintTop_toTopOf="@id/image_date"/>
+
+    <ImageView
+        android:id="@+id/image_joiner"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:src="@drawable/ic_group_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/text_date_event"
+        android:layout_marginLeft="@dimen/dp_10"/>
+
+    <TextView
+        android:id="@+id/text_joiner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/image_joiner"
+        app:layout_constraintTop_toTopOf="@id/image_joiner"
+        app:layout_constraintLeft_toRightOf="@+id/image_joiner"/>
+
+</android.support.constraint.ConstraintLayout>
