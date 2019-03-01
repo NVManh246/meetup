@@ -24,4 +24,18 @@ public interface ApiClient {
 
     @GET("listCategories")
     Flowable<GenresResponse> getListGenres();
+
+    @GET("listEventsByCategory")
+    Flowable<EventsResponse> getEventsByCategory(
+            @Query("category_id") int categoryId,
+            @Query("pageIndex") int pageIndex,
+            @Query("pageSize") int pageSize
+    );
+
+    @GET("search")
+    Flowable<EventsResponse> getEventsByKeyword(
+            @Query("keyword") String keyword,
+            @Query("pageIndex") int pageIndex,
+            @Query("pageSize") int pageSize
+    );
 }

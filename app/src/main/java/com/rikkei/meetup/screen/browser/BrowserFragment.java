@@ -1,5 +1,6 @@
 package com.rikkei.meetup.screen.browser;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,12 +16,14 @@ import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.GenreAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.data.model.genre.Genre;
+import com.rikkei.meetup.screen.search.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class BrowserFragment extends Fragment implements BrowserContract.View {
@@ -60,6 +63,12 @@ public class BrowserFragment extends Fragment implements BrowserContract.View {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+    @OnClick(R.id.image_search)
+    public void onButtonSearchClick() {
+        Intent intent = SearchActivity.getSearchIntent(getContext());
+        startActivity(intent);
     }
 
     private void setupRecyclerGenre() {

@@ -13,8 +13,8 @@ import java.util.Date;
 
 public class StringUtils {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final int TIME_MILLIS_OF_DAY = 86400000;
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final int TIME_MILLIS_OF_DAY = 86400000;
 
     public static String covertDate(Context context, String strDate) throws ParseException {
         Date date = new SimpleDateFormat(DATE_FORMAT).parse(strDate);

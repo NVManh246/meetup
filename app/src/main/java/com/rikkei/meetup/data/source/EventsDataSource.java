@@ -8,6 +8,8 @@ import io.reactivex.Flowable;
 public interface EventsDataSource {
     interface EventsRemoteDataSource {
         Flowable<EventsResponse> getListEvents(int pageIndex, int pageSize);
+        Flowable<EventsResponse> getEventsByCategory(int categoryId, int pageIndex, int pageSize);
+        Flowable<EventsResponse> getEventsByKeyword(String keyword, int pageIndex, int pageSize);
         Flowable<GenresResponse> getListGenres();
     }
 }
