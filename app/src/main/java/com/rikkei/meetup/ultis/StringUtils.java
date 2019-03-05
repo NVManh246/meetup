@@ -2,7 +2,6 @@ package com.rikkei.meetup.ultis;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.widget.TextView;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.data.model.event.Event;
