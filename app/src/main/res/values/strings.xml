@@ -4,4 +4,12 @@
     <string name="near">Near</string>
     <string name="browser">Browser</string>
     <string name="my_page">My page</string>
+    <string name="news">News</string>
+    <string name="popular">Popular</string>
+    <string name="error">Error</string>
+    <string name="n_a">N/A</string>
+    <string name="today">To day</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="day_ago">day ago</string>
+    <string name="permanent">Permanent</string>
 </resources>

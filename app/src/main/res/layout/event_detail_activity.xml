@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@android:color/white"/>
+
+    <ScrollView android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <ImageView
+                android:id="@+id/image_event"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_200"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:src="@drawable/global"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/text_name_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_event"
+                android:layout_margin="@dimen/dp_20"
+                android:textColor="@color/color_mine_shaft"
+                android:textSize="@dimen/sp_22"
+                android:textStyle="bold"
+                />
+
+            <View
+                android:id="@+id/view_line_one"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_name_event"
+                android:layout_margin="@dimen/dp_20"
+                android:background="@color/color_alto"/>
+
+            <ImageView
+                android:id="@+id/image_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_access_time_black_24dp"
+                app:layout_constraintTop_toBottomOf="@+id/view_line_one"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_margin="@dimen/dp_20" />
+
+            <TextView
+                android:id="@+id/text_date_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/image_date"
+                app:layout_constraintBottom_toBottomOf="@id/image_date"
+                app:layout_constraintLeft_toRightOf="@id/image_date"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_margin="@dimen/dp_20"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_mine_shaft" />
+
+            <ImageView
+                android:id="@+id/image_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_location_on_black_24dp"
+                app:layout_constraintTop_toBottomOf="@+id/image_date"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_margin="@dimen/dp_20"
+                />
+
+            <TextView
+                android:id="@+id/text_location_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/image_location"
+                app:layout_constraintBottom_toBottomOf="@id/image_location"
+                app:layout_constraintLeft_toRightOf="@id/image_location"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_margin="@dimen/dp_20"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_mine_shaft" />
+
+            <ImageView
+                android:id="@+id/image_joiner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_group_gray_24dp"
+                app:layout_constraintTop_toBottomOf="@+id/image_location"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_margin="@dimen/dp_20"/>
+
+            <TextView
+                android:id="@+id/text_joiner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/image_joiner"
+                app:layout_constraintBottom_toBottomOf="@id/image_joiner"
+                app:layout_constraintLeft_toRightOf="@id/image_joiner"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_margin="@dimen/dp_20"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_mine_shaft" />
+
+            <View
+                android:id="@+id/view_line_two"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_joiner"
+                android:layout_margin="@dimen/dp_20"
+                android:background="@color/color_alto"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"/>
+
+            <TextView
+                android:id="@+id/text_description_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_line_two"
+                android:layout_margin="@dimen/dp_20"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/color_mine_shaft" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</LinearLayout>
