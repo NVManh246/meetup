@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +20,10 @@ import com.rikkei.meetup.ultis.StringUtils;
 
 import java.text.ParseException;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -84,41 +88,35 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public void removeItemNull() {
+        mEvents.remove(mEvents.size() - 1);
+        notifyItemRemoved(mEvents.size());
+    }
+
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private Context mContext;
 
-        private ImageView mImageEvent;
-        private TextView mTextNameEvent;
-        private TextView mTextDescription;
-        private TextView mTextDate;
-        private ImageView mImageJoinerCount;
-        private TextView mTextJoinerCount;
-        private ConstraintLayout mLayoutEvent;
+        @BindView(R.id.image_event) ImageView mImageEvent;
+        @BindView(R.id.text_name_event) TextView mTextNameEvent;
+        @BindView(R.id.text_description_event) TextView mTextDescription;
+        @BindView(R.id.text_date_event) TextView mTextDate;
+        @BindView(R.id.image_joiner) ImageView mImageJoinerCount;
+        @BindView(R.id.text_joiner) TextView mTextJoinerCount;
+        @BindView(R.id.layout_event) ConstraintLayout mLayoutEvent;
 
         private OnItemClickListener mListener;
 
         public ItemViewHolder(@NonNull View itemView, Context context, OnItemClickListener listener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             mContext = context;
             mListener = listener;
-            initView(itemView);
         }
 
-        private void initView(View itemView) {
-            mImageEvent = itemView.findViewById(R.id.image_event);
-            mTextNameEvent = itemView.findViewById(R.id.text_name_event);
-            mTextDescription = itemView.findViewById(R.id.text_description_event);
-            mTextDate = itemView.findViewById(R.id.text_date_event);
-            mImageJoinerCount = itemView.findViewById(R.id.image_joiner);
-            mTextJoinerCount = itemView.findViewById(R.id.text_joiner);
-            mLayoutEvent = itemView.findViewById(R.id.layout_event);
-            mLayoutEvent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onItemClick(getAdapterPosition());
-                }
-            });
+        @OnClick(R.id.layout_event)
+        public void onItemClick() {
+            mListener.onItemClick(getAdapterPosition());
         }
 
         private void bindView(Event event) {
@@ -126,13 +124,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Glide.with(mContext).load(event.getPhoto()).into(mImageEvent);
             }
             mTextNameEvent.setText(event.getName());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mTextDescription.setText(Html.fromHtml(
-                        event.getDescriptionHtml(),
-                        Html.FROM_HTML_MODE_COMPACT)
-                );
-            } else {
-                mTextDescription.setText(Html.fromHtml(event.getDescriptionHtml()));
+            if(!TextUtils.isEmpty(event.getDescriptionHtml())) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    mTextDescription.setText(Html.fromHtml(
+                            event.getDescriptionHtml(),
+                            Html.FROM_HTML_MODE_COMPACT)
+                    );
+                } else {
+                    mTextDescription.setText(Html.fromHtml(event.getDescriptionHtml()));
+                }
             }
             try {
                 mTextDate.setText(StringUtils.getDateEventField(mContext, event));

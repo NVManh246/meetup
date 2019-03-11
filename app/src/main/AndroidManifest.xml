@@ -20,9 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screen.EventDetail.EventDetailActivity">
-
-        </activity>
+        <activity android:name=".screen.EventDetail.EventDetailActivity"/>
+        <activity android:name=".screen.search.SearchActivity"/>
     </application>
 
 </manifest>

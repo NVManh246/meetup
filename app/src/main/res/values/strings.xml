@@ -12,4 +12,9 @@
     <string name="yesterday">Yesterday</string>
     <string name="day_ago">day ago</string>
     <string name="permanent">Permanent</string>
+    <string name="input_keyword">Input keyword</string>
+    <string name="current_upcoming">Current or upcoming</string>
+    <string name="past">Past</string>
+    <string name="final_result">Final result!</string>
+    <string name="no_matching_result">No matching result!</string>
 </resources>
