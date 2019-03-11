@@ -32,6 +32,9 @@ public interface ApiClient {
             @Query("pageSize") int pageSize
     );
 
+    @GET("listEventsByCategory")
+    Flowable<EventsResponse> getEventsByCategory(@Query("category_id") int categoryId);
+
     @GET("search")
     Flowable<EventsResponse> getEventsByKeyword(
             @Query("keyword") String keyword,

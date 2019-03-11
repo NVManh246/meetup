@@ -17,4 +17,14 @@
     <string name="past">Past</string>
     <string name="final_result">Final result!</string>
     <string name="no_matching_result">No matching result!</string>
+    <string name="sort_by_popular">By popular</string>
+    <string name="sort_by_date">By date</string>
+    <string name="to_day">To day</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="weekend">Weekend</string>
+    <string name="next_week">Next week</string>
+    <string name="end_of_month">End of Month</string>
+    <string name="next_month">Next month</string>
+    <string name="forever">Forever</string>
+    <string name="end">End</string>
 </resources>

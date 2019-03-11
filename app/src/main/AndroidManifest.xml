@@ -22,6 +22,7 @@
         </activity>
         <activity android:name=".screen.EventDetail.EventDetailActivity"/>
         <activity android:name=".screen.search.SearchActivity"/>
+        <activity android:name=".screen.list_events_by_category.ListEventActivity"/>
     </application>
 
 </manifest>

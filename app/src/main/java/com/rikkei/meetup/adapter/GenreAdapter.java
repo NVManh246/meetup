@@ -1,6 +1,7 @@
 package com.rikkei.meetup.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +15,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> {
 
     private List<Genre> mGenres;
+    private OnItemClickListener mListener;
 
-    public GenreAdapter(List<Genre> genres) {
+    public GenreAdapter(List<Genre> genres, OnItemClickListener listener) {
         mGenres = genres;
+        mListener = listener;
     }
 
     @NonNull
@@ -28,7 +32,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_genre, viewGroup, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mListener);
     }
 
     @Override
@@ -49,14 +53,25 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_name_genre) TextView mTextNameGenre;
+        private OnItemClickListener mListener;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
+            mListener = listener;
             ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick(R.id.layout_genre)
+        public void onItemClick() {
+            mListener.onItemClick(getAdapterPosition());
         }
 
         private void bindView(Genre genre) {
             mTextNameGenre.setText(genre.getName());
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 }
