@@ -1,6 +1,7 @@
 package com.rikkei.meetup.ultis;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.rikkei.meetup.R;
@@ -10,11 +11,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils {
 
+    public static final String REGEX_EMAIL
+            = "^[a-z][a-z0-9_\\.]{5,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$";
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final int TIME_MILLIS_OF_DAY = 86400000;
+
+    private static final String SHARED_PREF_TOKEN = "sptoken";
+    private static final String KEY_TOKEN = "token";
 
     public static String covertDate(Context context, String strDate) throws ParseException {
         Date date = new SimpleDateFormat(DATE_FORMAT).parse(strDate);
@@ -44,5 +52,25 @@ public class StringUtils {
         } else {
             return event.getScheduleEndDate();
         }
+    }
+
+    public static boolean checkEmail(String email) {
+        Pattern pattern = Pattern.compile(StringUtils.REGEX_EMAIL);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public static void saveToken(Context context, String token) {
+        SharedPreferences sharedPreferences
+                = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_TOKEN, token);
+        editor.commit();
+    }
+
+    public static String getToken(Context context) {
+        SharedPreferences sharedPreferences
+                = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_TOKEN, null);
     }
 }

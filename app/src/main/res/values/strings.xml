@@ -27,4 +27,17 @@
     <string name="next_month">Next month</string>
     <string name="forever">Forever</string>
     <string name="end">End</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="fullname">Fullname</string>
+    <string name="already_a_member"><u>Already a member? Login</u></string>
+    <string name="forgot_password_under_line"><u>Forgot password</u></string>
+    <string name="forgot_password"><u>Forgot password</u></string>
+    <string name="reset_password">Reset password</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="invalid_password">Password must be between 6 -> 16 character</string>
+    <string name="please_check_again">Please check again</string>
+    <string name="reset_email_success">Reset email success</string>
 </resources>

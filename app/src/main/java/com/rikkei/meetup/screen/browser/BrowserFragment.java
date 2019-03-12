@@ -7,11 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.GenreAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
@@ -26,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
 public class BrowserFragment extends Fragment implements BrowserContract.View,
         GenreAdapter.OnItemClickListener {
 

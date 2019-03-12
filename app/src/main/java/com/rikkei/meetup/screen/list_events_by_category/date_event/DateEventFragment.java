@@ -171,6 +171,7 @@ public class DateEventFragment extends Fragment
 
     @Override
     public void endData() {
+
     }
 
     @Override
