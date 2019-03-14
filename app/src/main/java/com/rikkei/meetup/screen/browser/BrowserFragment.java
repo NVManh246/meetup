@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
@@ -34,6 +35,7 @@ public class BrowserFragment extends Fragment implements BrowserContract.View,
 
     private Unbinder mUnbinder;
     @BindView(R.id.recycler_genre) RecyclerView mRecyclerGenre;
+    @BindView(R.id.progress) ProgressBar mProgressBar;
 
     private List<Genre> mGenres;
     private GenreAdapter mGenreAdapter;
@@ -79,6 +81,11 @@ public class BrowserFragment extends Fragment implements BrowserContract.View,
         mRecyclerGenre.setAdapter(mGenreAdapter);
         mRecyclerGenre.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerGenre.addItemDecoration(new CustomItemDecoration(SPACING));
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

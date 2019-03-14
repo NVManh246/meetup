@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
@@ -38,6 +39,7 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
 
     @BindView(R.id.recycler_event) RecyclerView mRecyclerEvent;
     @BindView(R.id.swipe_refresh_event) SwipeRefreshLayout mRefreshLayout;
+    @BindView(R.id.progress) ProgressBar mProgressBar;
     private Unbinder mUnbinder;
 
     private EventAdapter mEventAdapter;
@@ -99,10 +101,18 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
     }
 
     @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showEvents(List<Event> events) {
         mEventAdapter.insertData(events);
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
+        }
+        if(mProgressBar.getVisibility() == View.VISIBLE) {
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 

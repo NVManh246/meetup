@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface ListEventContract {
     interface View {
+        void hideProgress();
         void showEvents(List<Event> events);
         void showEventsToday(List<Event> events);
         void showEventsTomorrow(List<Event> events);

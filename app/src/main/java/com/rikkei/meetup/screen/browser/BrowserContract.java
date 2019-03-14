@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface BrowserContract {
     interface View {
+        void hideProgress();
         void showEvents(List<Genre> genres);
         void showError();
     }

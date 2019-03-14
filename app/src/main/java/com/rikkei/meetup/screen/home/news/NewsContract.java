@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface NewsContract {
     interface View {
+        void hideProgress();
         void showListNews(List<News> news);
         void showError();
     }

@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -36,58 +37,103 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mBottomTabBar = findViewById(R.id.navigation_bottom_bar);
         mBottomTabBar.setOnNavigationItemSelectedListener(this);
-        initFragment();
         mPresenter = new MainPresenter(this);
         mToken = StringUtils.getToken(this);
         if(mToken != null) {
             mPresenter.checkTokenExpired(mToken);
         }
+        mFragmentManager = getSupportFragmentManager();
+
+        mHomeFragment = HomeFragment.newInstance();
+        mFragmentManager.beginTransaction()
+                .add(R.id.frame_container, mHomeFragment)
+                .commit();
+        mCurruntFragment = mHomeFragment;
+
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menu_home:
-                showFragment(mHomeFragment);
+                showFragment(0);
                 break;
             case R.id.menu_near:
-                showFragment(mNearFragment);
+                showFragment(1);
                 break;
             case R.id.menu_browser:
-                showFragment(mBrowserFragment);
+                showFragment(2);
                 break;
             case R.id.menu_my_page:
-                showFragment(mMyPageFragment);
+                showFragment(3);
                 break;
         }
         return true;
     }
 
-    private void initFragment() {
-        mHomeFragment = HomeFragment.newInstance();
-        mNearFragment = NearFragment.newInstance();
-        mBrowserFragment = BrowserFragment.newInstance();
-        mMyPageFragment = MyPageFragment.newInstance();
-        mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.beginTransaction()
-                .add(R.id.frame_container, mHomeFragment)
-                .add(R.id.frame_container, mNearFragment)
-                .add(R.id.frame_container, mBrowserFragment)
-                .add(R.id.frame_container, mMyPageFragment)
-                .hide(mNearFragment)
-                .hide(mBrowserFragment)
-                .hide(mMyPageFragment)
-                .show(mHomeFragment)
-                .commit();
-        mCurruntFragment = mHomeFragment;
-    }
-
-    private void showFragment(Fragment fragmentShow) {
-        mFragmentManager.beginTransaction()
-                .hide(mCurruntFragment)
-                .show(fragmentShow)
-                .commit();
-        mCurruntFragment = fragmentShow;
+    private void showFragment(int i) {
+        switch (i) {
+            case 0:
+                if(mHomeFragment == null) {
+                    mHomeFragment = HomeFragment.newInstance();
+                    mFragmentManager.beginTransaction()
+                            .show(mCurruntFragment)
+                            .add(R.id.frame_container, mHomeFragment)
+                            .commit();
+                } else {
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .show(mHomeFragment)
+                            .commit();
+                }
+                mCurruntFragment = mHomeFragment;
+                break;
+            case 1:
+                if(mNearFragment == null) {
+                    mNearFragment = NearFragment.newInstance();
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .add(R.id.frame_container, mNearFragment)
+                            .commit();
+                } else {
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .show(mNearFragment)
+                            .commit();
+                }
+                mCurruntFragment = mNearFragment;
+                break;
+            case 2:
+                if(mBrowserFragment == null) {
+                    mBrowserFragment = BrowserFragment.newInstance();
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .add(R.id.frame_container, mBrowserFragment)
+                            .commit();
+                } else {
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .show(mBrowserFragment)
+                            .commit();
+                }
+                mCurruntFragment = mBrowserFragment;
+                break;
+            case 3:
+                if(mMyPageFragment == null) {
+                    mMyPageFragment = MyPageFragment.newInstance();
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .add(R.id.frame_container, mMyPageFragment)
+                            .commit();
+                } else {
+                    mFragmentManager.beginTransaction()
+                            .hide(mCurruntFragment)
+                            .show(mMyPageFragment)
+                            .commit();
+                }
+                mCurruntFragment = mMyPageFragment;
+                break;
+        }
     }
 
     @Override

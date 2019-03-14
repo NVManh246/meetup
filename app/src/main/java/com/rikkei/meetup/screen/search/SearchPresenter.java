@@ -9,7 +9,13 @@ import com.rikkei.meetup.data.networking.ApiClient;
 import com.rikkei.meetup.data.networking.ApiUtils;
 import com.rikkei.meetup.data.source.remote.EventsRemoteDataSource;
 import com.rikkei.meetup.data.source.repository.EventsRepository;
+import com.rikkei.meetup.ultis.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -20,6 +26,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class SearchPresenter implements SearchContract.Presenter {
 
@@ -46,15 +53,36 @@ public class SearchPresenter implements SearchContract.Presenter {
                         if (events.size() == 0) {
                             mView.noResultSearching();
                         } else {
-                            mView.showEvents(eventsResponse.getListEvents().getEvents());
+                            filterEvents(events);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         mView.showError();
+                        throwable.printStackTrace();
                     }
                 });
         mCompositeDisposable.add(disposable);
+    }
+
+    private void filterEvents(List<Event> events) throws ParseException {
+        List<Event> eventsUpComing = new ArrayList<>();
+        List<Event> eventsPass = new ArrayList<>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(StringUtils.DATE_FORMAT);
+        Date currentDate = Calendar.getInstance().getTime();
+
+        for(Event event : events) {
+            Date endDate = dateFormat.parse(event.getScheduleEndDate());
+            if(endDate.before(currentDate)) {
+                eventsPass.add(event);
+            } else {
+                eventsUpComing.add(event);
+            }
+        }
+        mView.showEventsPass(eventsPass);
+        mView.showEventsUpComing(eventsUpComing);
+        mView.setCount();
     }
 }

@@ -35,11 +35,14 @@ public class NewsPresenter implements NewsContract.Presenter {
                     @Override
                     public void accept(NewsResponse newsResponse) throws Exception {
                         mView.showListNews(newsResponse.getListNews().getNews());
+                        mView.hideProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        mView.hideProgress();
                         mView.showError();
+                        System.out.println(throwable.toString());
                     }
                 });
 

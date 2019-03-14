@@ -33,10 +33,12 @@ public class BrowserPresenter implements BrowserContract.Presenter {
                     @Override
                     public void accept(GenresResponse genresResponse) throws Exception {
                         mView.showEvents(genresResponse.getListGenre().getGenres());
+                        mView.hideProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        mView.hideProgress();
                         mView.showError();
                     }
                 });
