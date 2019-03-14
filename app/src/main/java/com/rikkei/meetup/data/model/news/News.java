@@ -1,38 +1,44 @@
 package com.rikkei.meetup.data.model.news;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "tblNews")
 public class News {
     @SerializedName("id")
-    @Expose
+    @PrimaryKey
+    @ColumnInfo(name = "id")
     private long mId;
+    @ColumnInfo(name = "feed")
     @SerializedName("feed")
-    @Expose
     private String mFeed;
+    @ColumnInfo(name = "title")
     @SerializedName("title")
-    @Expose
     private String mTitle;
+    @ColumnInfo(name = "thumb_img")
     @SerializedName("thumb_img")
-    @Expose
     private String mThumbImg;
+    @ColumnInfo(name = "detail_url")
     @SerializedName("detail_url")
-    @Expose
     private String mDetailUrl;
+    @ColumnInfo(name = "description")
     @SerializedName("description")
-    @Expose
     private String mDescription;
+    @ColumnInfo(name = "author")
     @SerializedName("author")
-    @Expose
     private String mAuthor;
+    @ColumnInfo(name = "publish_date")
     @SerializedName("publish_date")
-    @Expose
     private String mPublicDate;
+    @ColumnInfo(name = "create_at")
     @SerializedName("created_at")
-    @Expose
     private String mCreateAt;
+    @ColumnInfo(name = "updated_at")
     @SerializedName("updated_at")
-    @Expose
     private String mUpdateDate;
 
     public News() {
@@ -76,5 +82,45 @@ public class News {
 
     public String getUpdateDate() {
         return mUpdateDate;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
+
+    public void setFeed(String feed) {
+        mFeed = feed;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    public void setThumbImg(String thumbImg) {
+        mThumbImg = thumbImg;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        mDetailUrl = detailUrl;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public void setAuthor(String author) {
+        mAuthor = author;
+    }
+
+    public void setPublicDate(String publicDate) {
+        mPublicDate = publicDate;
+    }
+
+    public void setCreateAt(String createAt) {
+        mCreateAt = createAt;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        mUpdateDate = updateDate;
     }
 }

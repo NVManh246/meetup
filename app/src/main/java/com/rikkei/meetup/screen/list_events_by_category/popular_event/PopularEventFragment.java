@@ -18,12 +18,14 @@ import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.common.EndLessScrollListener;
+import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventContract;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventPresenter;
 import com.rikkei.meetup.ultis.StringUtils;
+import com.rikkei.meetup.ultis.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class PopularEventFragment extends Fragment implements ListEventContract.View,
-        EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+        EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, Observer {
 
     private static final int SPACING = 40;
 
@@ -49,6 +51,7 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
     private int mPageIndex = 1;
     private int mPageSize = 10;
     private String mToken;
+    private boolean mIsLoadingError;
 
     private ListEventContract.Presenter mPresenter;
 
@@ -153,7 +156,11 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
 
     @Override
     public void showError() {
-        Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+        if(mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+        mEventAdapter.removeItemNull();
+        mIsLoadingError = true;
     }
 
     @Override
@@ -175,5 +182,15 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
         mPageIndex = 1;
         mEventAdapter.clearAll();
         mPresenter.getEventsByCategory(mToken, mCategoryId, mPageIndex, mPageSize);
+    }
+
+    @Override
+    public void update(int status) {
+        if(status == NetworkUtils.CONNECTED) {
+            if(mIsLoadingError) {
+                mPresenter.getEventsByCategory(mToken, mCategoryId, mPageIndex, mPageSize);
+                mIsLoadingError = false;
+            }
+        }
     }
 }

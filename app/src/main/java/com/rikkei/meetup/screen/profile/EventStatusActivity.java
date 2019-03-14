@@ -2,7 +2,9 @@ package com.rikkei.meetup.screen.profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,15 +13,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventAdapter;
 import com.rikkei.meetup.adapter.VenueAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
+import com.rikkei.meetup.common.NetworkChangeReceiver;
+import com.rikkei.meetup.common.OnNetworkChangedListener;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.data.model.event.Venue;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
+import com.rikkei.meetup.ultis.AnimUtils;
+import com.rikkei.meetup.ultis.NetworkUtils;
 import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
@@ -30,7 +36,7 @@ import butterknife.ButterKnife;
 
 public class EventStatusActivity extends AppCompatActivity
         implements EventAdapter.OnItemClickListener, EventStatusContract.View,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener, OnNetworkChangedListener {
 
     private static final String EXTRA_STATUS = "status";
     public static final int STATUS_GOING = 1;
@@ -45,16 +51,23 @@ public class EventStatusActivity extends AppCompatActivity
     SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.progress)
     ProgressBar mProgressBar;
+    @BindView(R.id.text_alert_network)
+    TextView mTextAlertNetWork;
 
     private List<Event> mEvents;
     private EventAdapter mEventAdapter;
-
     private List<Venue> mVenues;
     private VenueAdapter mVenueAdapter;
 
     private EventStatusContract.Presenter mPresenter;
     private int mStatus;
     private String mToken;
+
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+    private IntentFilter mIntentFilterNetwork;
+    private int mHeightAlert;
+    private boolean mIsShowAlert;
+    private boolean mIsLoadingError;
 
     public static Intent getEventStatusIntent(Context context, int status) {
         Intent intent = new Intent(context, EventStatusActivity.class);
@@ -73,17 +86,22 @@ public class EventStatusActivity extends AppCompatActivity
         mRefreshLayout.setOnRefreshListener(this);
         mPresenter = new EventStatusPresenter(this);
         mToken = StringUtils.getToken(this);
-        switch (mStatus) {
-            case STATUS_GOING:
-                mPresenter.getMyEvetns(mToken, STATUS_GOING);
-                break;
-            case STATUS_WENT:
-                mPresenter.getMyEvetns(mToken, STATUS_WENT);
-                break;
-            case VENUE:
-                mPresenter.getVenuesFollowed(mToken);
-                break;
-        }
+        loadData();
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+        mIntentFilterNetwork = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        mHeightAlert = (int) getResources().getDimension(R.dimen.dp_20);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(mNetworkChangeReceiver, mIntentFilterNetwork);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
 
     private void setupToolbar() {
@@ -109,7 +127,7 @@ public class EventStatusActivity extends AppCompatActivity
     }
 
     private void setupRecycler() {
-        if(mStatus == VENUE) {
+        if (mStatus == VENUE) {
             mVenues = new ArrayList<>();
             mVenueAdapter = new VenueAdapter(mVenues);
             mRecycler.setAdapter(mVenueAdapter);
@@ -126,7 +144,7 @@ public class EventStatusActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
-        if(mStatus != VENUE) {
+        if (mStatus != VENUE) {
             Intent intent = EventDetailActivity
                     .getEventDetailIntent(this, mEvents.get(position));
             startActivity(intent);
@@ -140,7 +158,7 @@ public class EventStatusActivity extends AppCompatActivity
 
     @Override
     public void showEvents(List<Event> events) {
-        if(mRefreshLayout.isRefreshing()) {
+        if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
         }
         mEventAdapter.insertData(events);
@@ -149,7 +167,7 @@ public class EventStatusActivity extends AppCompatActivity
 
     @Override
     public void showVenues(List<Venue> venues) {
-        if(mRefreshLayout.isRefreshing()) {
+        if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
         }
         mVenueAdapter.insertData(venues);
@@ -157,11 +175,44 @@ public class EventStatusActivity extends AppCompatActivity
 
     @Override
     public void showError() {
-        Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+        mIsLoadingError = true;
     }
 
     @Override
     public void onRefresh() {
+        loadData();
+    }
+
+    @Override
+    public void onNetworkChanged(int status) {
+        if (status == NetworkUtils.NOT_CONNECTED) {
+            if (!mIsShowAlert) {
+                mTextAlertNetWork.setText(R.string.not_connect);
+                mTextAlertNetWork.setBackgroundColor(getResources().getColor(R.color.color_milano_red));
+                AnimUtils.translateY(mTextAlertNetWork, 0, -mHeightAlert);
+                mIsShowAlert = true;
+            }
+        } else {
+            if (mIsShowAlert) {
+                mTextAlertNetWork.setBackgroundColor(
+                        getResources().getColor(R.color.color_japanese_laurel));
+                mTextAlertNetWork.setText(R.string.connecting);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AnimUtils.translateY(mTextAlertNetWork, -mHeightAlert, 0);
+                    }
+                }, 2000);
+                mIsShowAlert = false;
+            }
+            if (mIsLoadingError) {
+                loadData();
+                mIsLoadingError = false;
+            }
+        }
+    }
+
+    private void loadData() {
         switch (mStatus) {
             case STATUS_GOING:
                 mEventAdapter.clearAll();

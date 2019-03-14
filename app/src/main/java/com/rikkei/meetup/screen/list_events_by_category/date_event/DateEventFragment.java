@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,20 @@ import android.widget.Toast;
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventSmallAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
+import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventContract;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventPresenter;
 import com.rikkei.meetup.ultis.StringUtils;
+import com.rikkei.meetup.ultis.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DateEventFragment extends Fragment
-        implements ListEventContract.View, EventSmallAdapter.OnItemClickListener {
+        implements ListEventContract.View, EventSmallAdapter.OnItemClickListener, Observer {
 
     private static final int STT_EVENT_TODAY = 0;
     private static final int STT_EVENT_TOMORROW = 1;
@@ -44,6 +47,7 @@ public class DateEventFragment extends Fragment
     private List<CardView> mLayouts;
 
     private int mCategoryId;
+    private boolean mIsLoadingError;
     private ListEventContract.Presenter mPresenter;
 
     private String mToken;
@@ -73,6 +77,11 @@ public class DateEventFragment extends Fragment
         mPresenter = new ListEventPresenter(this);
         mToken = StringUtils.getToken(getContext());
         mPresenter.getEventsByCategory(mToken, mCategoryId, -1, -1);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     private void setupRecyclerEvents() {
@@ -173,7 +182,7 @@ public class DateEventFragment extends Fragment
 
     @Override
     public void showError() {
-        Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+        mIsLoadingError = true;
     }
 
     @Override
@@ -185,5 +194,15 @@ public class DateEventFragment extends Fragment
     public void onItemClick(Event event) {
         Intent intent = EventDetailActivity.getEventDetailIntent(getContext(), event);
         startActivity(intent);
+    }
+
+    @Override
+    public void update(int status) {
+        if(status == NetworkUtils.CONNECTED) {
+            if(mIsLoadingError) {
+                mPresenter.getEventsByCategory(mToken, mCategoryId, -1, -1);
+                mIsLoadingError = false;
+            }
+        }
     }
 }

@@ -77,6 +77,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void removeItemNull() {
+        if (!mNews.isEmpty() && mNews.get(mNews.size() - 1) == null) {
+            mNews.remove(mNews.size() - 1);
+            notifyItemRemoved(mNews.size());
+        }
+    }
+
     public void clearAll() {
         mNews.clear();
         notifyDataSetChanged();

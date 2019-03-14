@@ -26,4 +26,9 @@ public class NewsRemoteDataSource implements NewsDataSource.NewsRemoteDataSource
     public Flowable<NewsResponse> getListNews(int pageIndex, int pageSize) {
         return mApiClient.getListNews(pageIndex, pageSize);
     }
+
+    @Override
+    public Flowable<NewsResponse> getListNews() {
+        return mApiClient.getListNews();
+    }
 }

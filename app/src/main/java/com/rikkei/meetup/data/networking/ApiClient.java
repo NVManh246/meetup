@@ -23,6 +23,9 @@ public interface ApiClient {
             @Query("pageSize") int pageSize
     );
 
+    @GET("listNews")
+    Flowable<NewsResponse> getListNews();
+
     @GET("listPopularEvents")
     Flowable<EventsResponse> getListEvents(
             @Header("Authorization") String token,

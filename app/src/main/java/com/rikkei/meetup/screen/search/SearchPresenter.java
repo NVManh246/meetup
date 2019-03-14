@@ -28,6 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+
 public class SearchPresenter implements SearchContract.Presenter {
 
     private SearchContract.View mView;

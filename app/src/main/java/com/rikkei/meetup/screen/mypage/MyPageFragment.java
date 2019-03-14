@@ -4,16 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.screen.profile.ProfileFragment;
+import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.screen.signup.RegisterFragment;
 import com.rikkei.meetup.ultis.StringUtils;
 
-public class MyPageFragment extends Fragment {
+public class MyPageFragment extends Fragment implements Observer {
 
     private String mToken;
 
@@ -42,5 +44,11 @@ public class MyPageFragment extends Fragment {
                     .replace(R.id.frame_my_page, ProfileFragment.newInstance())
                     .commit();
         }
+    }
+
+    @Override
+    public void update(int status) {
+        Log.d("kiemtra", "myPage: " + status);
+
     }
 }
