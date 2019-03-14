@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.screen.forgotpassword.ForgotPasswordFragment;
+import com.rikkei.meetup.screen.profile.ProfileFragment;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -147,6 +148,14 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @Override
     public void navigationToProfile() {
+        getFragmentManager().popBackStack();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.frame_my_page, ProfileFragment.newInstance())
+                .commit();
+    }
 
+    @Override
+    public Context getViewContext() {
+        return getContext();
     }
 }

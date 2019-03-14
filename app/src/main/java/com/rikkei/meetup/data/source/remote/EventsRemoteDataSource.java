@@ -2,6 +2,8 @@ package com.rikkei.meetup.data.source.remote;
 
 import com.rikkei.meetup.data.model.event.EventsResponse;
 import com.rikkei.meetup.data.model.genre.GenresResponse;
+import com.rikkei.meetup.data.model.user.Message;
+import com.rikkei.meetup.data.model.venue.VenuesResponse;
 import com.rikkei.meetup.data.networking.ApiClient;
 import com.rikkei.meetup.data.source.EventsDataSource;
 
@@ -44,7 +46,27 @@ public class EventsRemoteDataSource implements EventsDataSource.EventsRemoteData
     }
 
     @Override
+    public Flowable<Message> updateStatusEvent(String token, long status, long evetnId) {
+        return mApiClient.updateEvent(token, status, evetnId);
+    }
+
+    @Override
+    public Flowable<Message> followVenue(String token, long venueId) {
+        return mApiClient.followVenue(token, venueId);
+    }
+
+    @Override
     public Flowable<GenresResponse> getListGenres() {
         return mApiClient.getListGenres();
+    }
+
+    @Override
+    public Flowable<EventsResponse> getMyEvents(String token, int status) {
+        return mApiClient.getMyEvents(token, status);
+    }
+
+    @Override
+    public Flowable<VenuesResponse> getVenuesFollowed(String token) {
+        return mApiClient.getVenuesFollowed(token);
     }
 }

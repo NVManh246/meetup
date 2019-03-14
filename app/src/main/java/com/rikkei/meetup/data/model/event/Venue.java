@@ -20,6 +20,16 @@ public class Venue implements Parcelable {
     private String mScheduleClosingHour;
     @SerializedName("schedule_closed")
     private String mScheduleClosed;
+    @SerializedName("contact_phone")
+    private String mContactPhone;
+    @SerializedName("contact_address")
+    private String mContactAddress;
+    @SerializedName("geo_area")
+    private String mGeoArea;
+    @SerializedName("geo_long")
+    private String mGeoLong;
+    @SerializedName("geo_lat")
+    private String mGeoLat;
 
     public Venue() {
     }
@@ -32,6 +42,11 @@ public class Venue implements Parcelable {
         mScheduleOpeningHour = in.readString();
         mScheduleClosingHour = in.readString();
         mScheduleClosed = in.readString();
+        mContactPhone = in.readString();
+        mContactAddress = in.readString();
+        mGeoArea = in.readString();
+        mGeoLong = in.readString();
+        mGeoLat = in.readString();
     }
 
     public static final Creator<Venue> CREATOR = new Creator<Venue>() {
@@ -45,6 +60,26 @@ public class Venue implements Parcelable {
             return new Venue[size];
         }
     };
+
+    public String getContactPhone() {
+        return mContactPhone;
+    }
+
+    public String getContactAddress() {
+        return mContactAddress;
+    }
+
+    public String getGeoArea() {
+        return mGeoArea;
+    }
+
+    public String getGeoLong() {
+        return mGeoLong;
+    }
+
+    public String getGeoLat() {
+        return mGeoLat;
+    }
 
     public long getId() {
         return mId;
@@ -88,5 +123,10 @@ public class Venue implements Parcelable {
         dest.writeString(mScheduleOpeningHour);
         dest.writeString(mScheduleClosingHour);
         dest.writeString(mScheduleClosed);
+        dest.writeString(mContactPhone);
+        dest.writeString(mContactAddress);
+        dest.writeString(mGeoArea);
+        dest.writeString(mGeoLong);
+        dest.writeString(mGeoLat);
     }
 }

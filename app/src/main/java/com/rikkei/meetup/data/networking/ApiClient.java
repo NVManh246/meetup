@@ -5,11 +5,13 @@ import com.rikkei.meetup.data.model.genre.GenresResponse;
 import com.rikkei.meetup.data.model.news.NewsResponse;
 import com.rikkei.meetup.data.model.user.Message;
 import com.rikkei.meetup.data.model.user.TokenResponse;
+import com.rikkei.meetup.data.model.venue.VenuesResponse;
 
 import io.reactivex.Flowable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -62,4 +64,28 @@ public interface ApiClient {
     @POST("resetPassword")
     @FormUrlEncoded
     Flowable<Message> resetPassword(@Field("email") String email);
+
+    @POST("doUpdateEvent")
+    @FormUrlEncoded
+    Flowable<Message> updateEvent(
+            @Header("Authorization") String token,
+            @Field("status") long status,
+            @Field("event_id") long eventId
+    );
+
+    @POST("doFollowVenue")
+    @FormUrlEncoded
+    Flowable<Message> followVenue(
+            @Header("Authorization") String token,
+            @Field("venue_id") long venueId
+    );
+
+    @GET("listMyEvents")
+    Flowable<EventsResponse> getMyEvents(
+            @Header("Authorization") String token,
+            @Query("status") int status
+    );
+
+    @GET("listVenueFollowed")
+    Flowable<VenuesResponse> getVenuesFollowed(@Header("Authorization") String token);
 }

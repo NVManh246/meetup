@@ -25,6 +25,7 @@ public class ListEventActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.tab_layout) TabLayout mTabLayout;
     @BindView(R.id.viewpager_list_event) ViewPager mViewPager;
+
     private EventPagerAdapter mEventPagerAdapter;
 
     private Genre mGenre;

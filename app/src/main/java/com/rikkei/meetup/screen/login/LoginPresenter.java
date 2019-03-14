@@ -56,6 +56,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                             mView.hideProgress();
                             mView.showError();
                         } else {
+                            StringUtils.saveToken(mView.getViewContext(), tokenResponse.getToken().getToken());
                             mView.navigationToProfile();
                         }
                     }
