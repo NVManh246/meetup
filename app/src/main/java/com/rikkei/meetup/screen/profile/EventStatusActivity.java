@@ -143,7 +143,7 @@ public class EventStatusActivity extends AppCompatActivity
             mEventAdapter = new EventAdapter(mEvents, this);
             mRecycler.setAdapter(mEventAdapter);
             mRecycler.setLayoutManager(new LinearLayoutManager(this));
-            mRecycler.addItemDecoration(new CustomItemDecoration(20));
+            mRecycler.addItemDecoration(new CustomItemDecoration(40));
         }
     }
 

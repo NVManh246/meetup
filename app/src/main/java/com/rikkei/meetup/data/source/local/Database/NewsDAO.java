@@ -3,6 +3,7 @@ package com.rikkei.meetup.data.source.local.Database;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.rikkei.meetup.data.model.news.News;
@@ -19,7 +20,7 @@ public interface NewsDAO {
     @Query("SELECT * FROM tblNews")
     Flowable<List<News>> getAllNews();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertNews(List<News> news);
 
     @Query("DELETE FROM tblNews")

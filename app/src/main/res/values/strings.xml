@@ -58,4 +58,6 @@
     <string name="connecting">Connecting...!</string>
     <string name="category">Category</string>
     <string name="conection_error">Connection error. Swipe down to try again!</string>
+    <string name="update_data">Update data</string>
+    <string name="update">Update</string>
 </resources>
