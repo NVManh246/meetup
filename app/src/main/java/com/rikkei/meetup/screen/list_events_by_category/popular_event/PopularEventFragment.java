@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
@@ -42,6 +43,7 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
     @BindView(R.id.recycler_event) RecyclerView mRecyclerEvent;
     @BindView(R.id.swipe_refresh_event) SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.progress) ProgressBar mProgressBar;
+    @BindView(R.id.text_alert_connection_error) TextView mTextAlertConnectionError;
     private Unbinder mUnbinder;
 
     private EventAdapter mEventAdapter;
@@ -117,6 +119,7 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
         if(mProgressBar.getVisibility() == View.VISIBLE) {
             mProgressBar.setVisibility(View.GONE);
         }
+        mTextAlertConnectionError.setVisibility(View.GONE);
     }
 
     @Override
@@ -161,6 +164,9 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
         }
         mEventAdapter.removeItemNull();
         mIsLoadingError = true;
+        if(mEvents.isEmpty()) {
+            mTextAlertConnectionError.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

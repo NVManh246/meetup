@@ -31,7 +31,7 @@ public class StringUtils {
         Long publicTime = date.getTime();
         Long currentTime = Calendar.getInstance().getTimeInMillis();
         Long timeOffset = currentTime - publicTime;
-        int dayOffet = (int) (timeOffset/TIME_MILLIS_OF_DAY);
+        int dayOffet = (int) (timeOffset / TIME_MILLIS_OF_DAY);
         switch (dayOffet) {
             case 0:
                 return context.getString(R.string.today);
@@ -46,10 +46,10 @@ public class StringUtils {
         Date currentDate = Calendar.getInstance().getTime();
         Date startDate = dateFormat.parse(event.getScheduleStartDate());
 
-        if(!TextUtils.isEmpty(event.getSchedulePermanent())) {
+        if (!TextUtils.isEmpty(event.getSchedulePermanent())) {
             return context.getString(R.string.permanent);
         }
-        if(currentDate.before(startDate)) {
+        if (currentDate.before(startDate)) {
             return event.getScheduleStartDate();
         } else {
             return event.getScheduleEndDate();

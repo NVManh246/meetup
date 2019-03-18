@@ -1,10 +1,11 @@
-package com.rikkei.meetup.screen.main;
+package com.rikkei.meetup.screen.SplashScreen;
 
 import android.content.Context;
 
-public interface MainContract {
+public interface SplashScreenContract {
     interface View {
         void showResult();
+        void navigationToMain();
         Context getViewContext();
     }
 

@@ -4,17 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +42,8 @@ public class NewsFragment extends Fragment implements NewsContract.View,
 
     @BindView(R.id.recycler_news) RecyclerView mRecyclerNews;
     @BindView(R.id.swipe_refresh_news) SwipeRefreshLayout mSwipeRefreshNews;
-    @BindView(R.id.progress) ProgressBar mProgressBar;
+    @BindView(R.id.layout_progress) FrameLayout mLayoutProgress;
+    @BindView(R.id.text_alert_connection_error) TextView mTextAlertConnectionError;
     private Unbinder mUnbinder;
 
     private NewsAdapter mNewsAdapter;
@@ -70,7 +71,6 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
         mSwipeRefreshNews.setOnRefreshListener(this);
-        mSwipeRefreshNews.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         setupRecyclerNews();
         mPresenter = new NewsPresenter(this);
         if(statusNetwork == NetworkUtils.CONNECTED) {
@@ -108,7 +108,14 @@ public class NewsFragment extends Fragment implements NewsContract.View,
 
     @Override
     public void hideProgress() {
-        mProgressBar.setVisibility(View.GONE);
+        if(mLayoutProgress.getVisibility() == View.VISIBLE) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLayoutProgress.setVisibility(View.GONE);
+                }
+            }, 1500);
+        }
     }
 
     @Override
@@ -117,22 +124,28 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         if(mSwipeRefreshNews.isRefreshing()) {
             mSwipeRefreshNews.setRefreshing(false);
         }
-        if(mProgressBar.getVisibility() == View.VISIBLE) {
-            mProgressBar.setVisibility(View.GONE);
-        }
+        mTextAlertConnectionError.setVisibility(View.GONE);
     }
 
     @Override
     public void showError() {
         if(mSwipeRefreshNews.isRefreshing()) {
             mSwipeRefreshNews.setRefreshing(false);
+            mTextAlertConnectionError.setVisibility(View.VISIBLE);
+        }
+        if(mListNews.isEmpty()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                  mTextAlertConnectionError.setVisibility(View.VISIBLE);
+                }
+            }, 1500);
         }
         mIsLoadingError = true;
         mNewsAdapter.removeItemNull();
         if(mPageIndex > 1) {
             mPageIndex--;
         }
-        Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
     }
 
     @Override

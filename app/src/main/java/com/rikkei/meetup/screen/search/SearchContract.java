@@ -11,6 +11,10 @@ public interface SearchContract {
         void setCount();
         void showError();
         void noResultSearching();
+        void showProgress();
+        void hideProgress();
+        void showAlertConnectionError();
+        void hideAlertConnectionError();
     }
 
     interface Presenter {

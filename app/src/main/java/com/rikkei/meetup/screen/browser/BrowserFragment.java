@@ -5,14 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.GenreAdapter;
@@ -39,6 +39,8 @@ public class BrowserFragment extends Fragment implements BrowserContract.View,
     private Unbinder mUnbinder;
     @BindView(R.id.recycler_genre) RecyclerView mRecyclerGenre;
     @BindView(R.id.progress) ProgressBar mProgressBar;
+    @BindView(R.id.swipe_refresh_genre) SwipeRefreshLayout mRefreshLayout;
+    @BindView(R.id.text_alert_connection_error) TextView mTextAlertConnectionError;
 
     private List<Genre> mGenres;
     private GenreAdapter mGenreAdapter;
@@ -65,6 +67,12 @@ public class BrowserFragment extends Fragment implements BrowserContract.View,
         setupRecyclerGenre();
         mPresenter = new BrowserPresenter(this);
         mPresenter.getGenres();
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.getGenres();
+            }
+        });
     }
 
     @Override
@@ -95,11 +103,21 @@ public class BrowserFragment extends Fragment implements BrowserContract.View,
     @Override
     public void showEvents(List<Genre> genres) {
         mGenreAdapter.insertData(genres);
+        if(mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+        mTextAlertConnectionError.setVisibility(View.GONE);
     }
 
     @Override
     public void showError() {
         mIsLoadingError = true;
+        if(mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+        if(mGenres.isEmpty()) {
+            mTextAlertConnectionError.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

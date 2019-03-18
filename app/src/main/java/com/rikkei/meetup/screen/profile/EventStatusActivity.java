@@ -45,6 +45,8 @@ public class EventStatusActivity extends AppCompatActivity
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.text_title_toolbar)
+    TextView mTextTitleToolbar;
     @BindView(R.id.recycler)
     RecyclerView mRecycler;
     @BindView(R.id.swipe_refresh_layout)
@@ -53,6 +55,8 @@ public class EventStatusActivity extends AppCompatActivity
     ProgressBar mProgressBar;
     @BindView(R.id.text_alert_network)
     TextView mTextAlertNetWork;
+    @BindView(R.id.text_alert_connection_error)
+    TextView mTextAlertConnectionError;
 
     private List<Event> mEvents;
     private EventAdapter mEventAdapter;
@@ -107,16 +111,17 @@ public class EventStatusActivity extends AppCompatActivity
     private void setupToolbar() {
         switch (mStatus) {
             case STATUS_GOING:
-                mToolbar.setTitle(R.string.going);
+                mTextTitleToolbar.setText(R.string.going);
                 break;
             case STATUS_WENT:
-                mToolbar.setTitle(R.string.went);
+                mTextTitleToolbar.setText(R.string.went);
                 break;
             case VENUE:
-                mToolbar.setTitle(R.string.venue);
+                mTextTitleToolbar.setText(R.string.venue);
                 break;
         }
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +168,7 @@ public class EventStatusActivity extends AppCompatActivity
         }
         mEventAdapter.insertData(events);
         mEventAdapter.removeItemNull();
+        mTextAlertConnectionError.setVisibility(View.GONE);
     }
 
     @Override
@@ -170,11 +176,16 @@ public class EventStatusActivity extends AppCompatActivity
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
         }
+        mTextAlertConnectionError.setVisibility(View.GONE);
         mVenueAdapter.insertData(venues);
     }
 
     @Override
     public void showError() {
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+        mTextAlertConnectionError.setVisibility(View.VISIBLE);
         mIsLoadingError = true;
     }
 

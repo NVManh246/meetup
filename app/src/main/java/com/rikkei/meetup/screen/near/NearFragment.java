@@ -23,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
     private Location mCenterLocation;
     private Location mCurentLocation;
     private Circle mCircle;
+    private MapFragment mMapFragment;
 
     @BindView(R.id.recycler_event)
     RecyclerView mRecyclerEvent;
@@ -114,11 +116,9 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
-        setupRecycler();
         mToken = StringUtils.getToken(getContext());
-        MapFragment mapFragment = (MapFragment) mActivity.getFragmentManager()
+        mMapFragment = (MapFragment) mActivity.getFragmentManager()
                 .findFragmentById(R.id.fragment_map);
-        mapFragment.getMapAsync(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
@@ -129,17 +129,12 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
         mCurentLocation = new Location("");
         mMarkers = new ArrayList<>();
         mPresenter = new NearPresenter(this);
+        configMap();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (checkLocationPermission()) {
-            mGoogleApiClient.connect();
-            mPresenter.getNearEvents(mToken, RADIUS,
-                    String.valueOf(mCenterLocation.getLongitude()),
-                    String.valueOf(mCenterLocation.getLatitude()));
-        }
     }
 
     @Override
@@ -159,13 +154,10 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden) {
-            if (!checkLocationPermission()) {
+        if(!hidden) {
+            if(!checkLocationPermission()) {
                 initPermission();
             } else {
-                //đã có quyền
-                mGoogleApiClient.connect();
-                mGoogleMap.setMyLocationEnabled(true);
                 if (mToken == null) {
                     mToken = StringUtils.getToken(getContext());
                     if (mToken != null) {
@@ -185,15 +177,43 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    private void configMap() {
+        if (!checkLocationPermission()) {
+            initPermission();
+        } else {
+            //đã có quyền
+            mMapFragment.getMapAsync(this);
+            mGoogleApiClient.connect();
+            if (mToken == null) {
+                mToken = StringUtils.getToken(getContext());
+                if (mToken != null) {
+                    mPresenter.getNearEvents(mToken, RADIUS,
+                            String.valueOf(mCenterLocation.getLongitude()),     //0.0
+                            String.valueOf(mCenterLocation.getLatitude()));
+                }
+            } else {
+                mToken = StringUtils.getToken(getContext());
+                if (mToken == null) {
+                    mPresenter.getNearEvents(mToken, RADIUS,
+                            String.valueOf(mCenterLocation.getLongitude()),     //0.0
+                            String.valueOf(mCenterLocation.getLatitude()));
+                }
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+        mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.setOnCameraIdleListener(this);
         mGoogleMap.setOnCameraMoveListener(this);
         mGoogleMap.setOnMyLocationButtonClickListener(this);
         mGoogleMap.setOnMarkerClickListener(this);
         mGoogleMap.setOnInfoWindowClickListener(this);
+        setupRecycler();
+        forcusMyLocation();
     }
 
     private void setupRecycler() {
@@ -284,8 +304,9 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETTING_REQUEST_CODE) {
             if (checkLocationPermission()) {
+                Log.d("kiemtra", "ok");
                 mGoogleApiClient.connect();
-                mGoogleMap.setMyLocationEnabled(true);
+                mMapFragment.getMapAsync(this);
                 mPresenter.getNearEvents(mToken, RADIUS,
                         String.valueOf(mCenterLocation.getLongitude()),
                         String.valueOf(mCenterLocation.getLatitude()));
@@ -302,7 +323,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
             if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //được cấp quyền
                 mGoogleApiClient.connect();
-                mGoogleMap.setMyLocationEnabled(true);
+                mMapFragment.getMapAsync(this);
                 mPresenter.getNearEvents(mToken, RADIUS,
                         String.valueOf(mCenterLocation.getLongitude()),     //0.0
                         String.valueOf(mCenterLocation.getLatitude()));     //0.0
@@ -331,8 +352,8 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
             }
         } else {
             //đã có quyền
+            mMapFragment.getMapAsync(this);
             mGoogleApiClient.connect();
-            mGoogleMap.setMyLocationEnabled(true);
             mPresenter.getNearEvents(mToken, RADIUS,
                     String.valueOf(mCenterLocation.getLongitude()),
                     String.valueOf(mCenterLocation.getLatitude()));

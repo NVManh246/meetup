@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:textSize="@dimen/sp_14"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/text_address_venue"

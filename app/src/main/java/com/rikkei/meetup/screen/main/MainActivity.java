@@ -1,10 +1,8 @@
 package com.rikkei.meetup.screen.main;
 
 import android.content.Context;
-import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,9 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
-
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.common.NetworkChangeReceiver;
@@ -25,13 +22,12 @@ import com.rikkei.meetup.screen.browser.BrowserFragment;
 import com.rikkei.meetup.screen.home.HomeFragment;
 import com.rikkei.meetup.screen.mypage.MyPageFragment;
 import com.rikkei.meetup.screen.near.NearFragment;
-import com.rikkei.meetup.ultis.StringUtils;
 import com.rikkei.meetup.ultis.AnimUtils;
 import com.rikkei.meetup.ultis.NetworkUtils;
+import com.rikkei.meetup.ultis.StringUtils;
 
 public class MainActivity extends AppCompatActivity implements
-        BottomNavigationView.OnNavigationItemSelectedListener,
-        OnNetworkChangedListener,  MainContract.View {
+        BottomNavigationView.OnNavigationItemSelectedListener, OnNetworkChangedListener {
 
     private TextView mTextAlertNetwork;
     private BottomNavigationView mBottomTabBar;
@@ -41,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements
     private MyPageFragment mMyPageFragment;
     private FragmentManager mFragmentManager;
     private Fragment mCurruntFragment;
-    private String mToken;
-    private MainContract.Presenter mPresenter;
 
     private NetworkChangeReceiver mNetworkChangeReceiver;
     private IntentFilter mIntentFilterNetwork;
@@ -51,6 +45,11 @@ public class MainActivity extends AppCompatActivity implements
     private int mHeightAlert;
     private boolean mIsShowAlert;
 
+    public static Intent getMainIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +57,6 @@ public class MainActivity extends AppCompatActivity implements
         mBottomTabBar = findViewById(R.id.navigation_bottom_bar);
         mTextAlertNetwork = findViewById(R.id.text_alert_network);
         mBottomTabBar.setOnNavigationItemSelectedListener(this);
-        mPresenter = new MainPresenter(this);
-        mToken = StringUtils.getToken(this);
-        if(mToken != null) {
-            mPresenter.checkTokenExpired(mToken);
-        }
         mFragmentManager = getSupportFragmentManager();
 
         mHomeFragment = HomeFragment.newInstance();
@@ -178,20 +172,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void showResult() {
-        Toast.makeText(this, R.string.token_expired, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Context getViewContext() {
-        return this;
-    }
-
     public void onNetworkChanged(int status) {
         mNetworkData.notifyObservers(status);
         if (status == NetworkUtils.NOT_CONNECTED) {
-            if(!mIsShowAlert) {
+            if (!mIsShowAlert) {
                 mTextAlertNetwork.setText(R.string.not_connect);
                 mTextAlertNetwork.setBackgroundColor(getResources().getColor(R.color.color_milano_red));
                 AnimUtils.translateY(mTextAlertNetwork, 0, -mHeightAlert);

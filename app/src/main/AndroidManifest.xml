@@ -18,13 +18,14 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".screen.main.MainActivity">
+        <activity android:name=".screen.SplashScreen.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".screen.main.MainActivity"/>
         <activity android:name=".screen.EventDetail.EventDetailActivity"/>
         <activity android:name=".screen.search.SearchActivity"/>
         <activity android:name=".screen.list_events_by_category.ListEventActivity"/>

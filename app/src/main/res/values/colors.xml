@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FF4747</color>
-    <color name="colorPrimaryDark">#FF4747</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4747</color>
     <color name="red_orange">#FD3939</color>
     <color name="color_mona_lisa">#FF9494</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_mine_shaft">#1F1F1F</color>
-    <color name="color_tundora">#4D4D4D</color>
-    <color name="color_alto">#D8D8D8</color>
-    <color name="color_gallery">#F0F0F0</color>
+    <color name="color_tundora">#707070</color>
+    <color name="color_alto">#85000000</color>
+    <color name="color_gallery">#F5F7F5F5</color>
     <color name="color_milano_red">#BD1300</color>
     <color name="color_japanese_laurel">#01980A</color>
 </resources>

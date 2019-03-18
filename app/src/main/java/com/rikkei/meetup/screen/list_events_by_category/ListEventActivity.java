@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.rikkei.meetup.R;
-import com.rikkei.meetup.adapter.EventPagerAdapter;
 import com.rikkei.meetup.adapter.PagerAdapter;
 import com.rikkei.meetup.common.NetworkChangeReceiver;
 import com.rikkei.meetup.common.OnNetworkChangedListener;
@@ -34,6 +33,7 @@ public class ListEventActivity extends AppCompatActivity implements OnNetworkCha
     private static final String EXTRA_CATEFORY = "category";
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.text_title_toolbar) TextView mTextTitleToolbar;
     @BindView(R.id.tab_layout) TabLayout mTabLayout;
     @BindView(R.id.viewpager_list_event) ViewPager mViewPager;
     @BindView(R.id.text_alert_network) TextView mTextAlertNetwork;
@@ -80,8 +80,9 @@ public class ListEventActivity extends AppCompatActivity implements OnNetworkCha
     }
 
     private void initView() {
-        mToolbar.setTitle(mGenre.getName());
+        mTextTitleToolbar.setText(mGenre.getName());
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

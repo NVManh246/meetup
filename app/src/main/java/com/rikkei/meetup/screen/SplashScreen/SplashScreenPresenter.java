@@ -1,4 +1,6 @@
-package com.rikkei.meetup.screen.main;
+package com.rikkei.meetup.screen.SplashScreen;
+
+import android.os.Handler;
 
 import com.rikkei.meetup.data.model.venue.VenuesResponse;
 import com.rikkei.meetup.data.networking.ApiUtils;
@@ -12,19 +14,18 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainPresenter implements MainContract.Presenter {
+public class SplashScreenPresenter implements SplashScreenContract.Presenter {
 
-    private MainContract.View mView;
+    private SplashScreenContract.View mView;
     private EventsRepository mEventsRepository;
     private CompositeDisposable mCompositeDisposable;
 
-    public MainPresenter(MainContract.View view) {
+    public SplashScreenPresenter(SplashScreenContract.View view) {
         mView = view;
         mEventsRepository = EventsRepository
                 .getInstance(EventsRemoteDataSource.getInstance(ApiUtils.getApi()));
         mCompositeDisposable = new CompositeDisposable();
     }
-
     @Override
     public void checkTokenExpired(String token) {
         Disposable disposable = mEventsRepository.getVenuesFollowed(token)
@@ -37,11 +38,24 @@ public class MainPresenter implements MainContract.Presenter {
                             mView.showResult();
                             StringUtils.saveToken(mView.getViewContext(), null, null);
                         }
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mView.navigationToMain();
+                            }
+                        }, 1500);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         System.out.println(throwable.toString());
+                        StringUtils.saveToken(mView.getViewContext(), null, null);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mView.navigationToMain();
+                            }
+                        }, 1500);
                     }
                 });
         mCompositeDisposable.add(disposable);

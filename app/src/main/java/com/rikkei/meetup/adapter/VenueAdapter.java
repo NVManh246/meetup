@@ -1,6 +1,7 @@
 package com.rikkei.meetup.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.ViewHolder> {
@@ -62,6 +64,9 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.ViewHolder> 
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+        @OnClick(R.id.layout_venue)
+        public void onClickItemVenue(){}
 
         private void bindItem(Venue venue) {
             mTextDes.setText(venue.getDescription());

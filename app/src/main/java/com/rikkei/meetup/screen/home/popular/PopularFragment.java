@@ -8,11 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventAdapter;
@@ -27,6 +26,10 @@ import com.rikkei.meetup.ultis.NetworkUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class PopularFragment extends Fragment implements PopularContract.View,
         EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, Observer {
 
@@ -34,8 +37,10 @@ public class PopularFragment extends Fragment implements PopularContract.View,
     private static final int PAGE_SIZE_DEFAULT = 10;
     private static final int FIRST_PAGE_INDEX = 1;
 
-    private RecyclerView mRecyclerEvent;
-    private SwipeRefreshLayout mSwipeRefreshEvent;
+    @BindView(R.id.recycler_event) RecyclerView mRecyclerEvent;
+    @BindView(R.id.swipe_refresh_event) SwipeRefreshLayout mSwipeRefreshEvent;
+    @BindView(R.id.text_alert_connection_error) TextView mTextAlertConnectionError;
+    private Unbinder mUnbinder;
     private EventAdapter mEventAdapter;
     private List<Event> mEvents;
 
@@ -60,18 +65,18 @@ public class PopularFragment extends Fragment implements PopularContract.View,
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(view);
+        mUnbinder = ButterKnife.bind(this, view);
         setupRecyclerEvent();
         mPresenter = new PopularPresenter(this);
         mToken = StringUtils.getToken(getContext());
         mPresenter.getEvents(mToken, mPageIndex, mPageSize);
+        mSwipeRefreshEvent.setOnRefreshListener(this);
     }
 
-    private void initView(View view) {
-        mRecyclerEvent = view.findViewById(R.id.recycler_event);
-        mSwipeRefreshEvent = view.findViewById(R.id.swipe_refresh_event);
-        mSwipeRefreshEvent.setOnRefreshListener(this);
-        mSwipeRefreshEvent.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     private void setupRecyclerEvent() {
@@ -95,6 +100,7 @@ public class PopularFragment extends Fragment implements PopularContract.View,
         if (mSwipeRefreshEvent.isRefreshing()) {
             mSwipeRefreshEvent.setRefreshing(false);
         }
+        mTextAlertConnectionError.setVisibility(View.GONE);
     }
 
     @Override
@@ -104,6 +110,7 @@ public class PopularFragment extends Fragment implements PopularContract.View,
         }
         mIsLoadingError = true;
         mEventAdapter.removeItemNull();
+        mTextAlertConnectionError.setVisibility(View.VISIBLE);
     }
 
     @Override

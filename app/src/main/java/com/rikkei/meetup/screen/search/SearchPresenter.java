@@ -1,11 +1,7 @@
 package com.rikkei.meetup.screen.search;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.data.model.event.EventsResponse;
-import com.rikkei.meetup.data.networking.ApiClient;
 import com.rikkei.meetup.data.networking.ApiUtils;
 import com.rikkei.meetup.data.source.remote.EventsRemoteDataSource;
 import com.rikkei.meetup.data.source.repository.EventsRepository;
@@ -23,11 +19,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-
 
 public class SearchPresenter implements SearchContract.Presenter {
 
@@ -53,14 +44,21 @@ public class SearchPresenter implements SearchContract.Presenter {
                         List<Event> events = eventsResponse.getListEvents().getEvents();
                         if (events.size() == 0) {
                             mView.noResultSearching();
+                            mView.hideProgress();
+                            mView.setCount();
                         } else {
                             filterEvents(events);
+                            mView.hideProgress();
                         }
+                        mView.hideAlertConnectionError();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         mView.showError();
+                        mView.hideProgress();
+                        mView.showAlertConnectionError();
+                        mView.setCount();
                         throwable.printStackTrace();
                     }
                 });
@@ -74,9 +72,9 @@ public class SearchPresenter implements SearchContract.Presenter {
         SimpleDateFormat dateFormat = new SimpleDateFormat(StringUtils.DATE_FORMAT);
         Date currentDate = Calendar.getInstance().getTime();
 
-        for(Event event : events) {
+        for (Event event : events) {
             Date endDate = dateFormat.parse(event.getScheduleEndDate());
-            if(endDate.before(currentDate)) {
+            if (endDate.before(currentDate)) {
                 eventsPass.add(event);
             } else {
                 eventsUpComing.add(event);
