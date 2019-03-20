@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +105,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.image_joiner) ImageView mImageJoinerCount;
         @BindView(R.id.text_joiner) TextView mTextJoinerCount;
         @BindView(R.id.layout_event) ConstraintLayout mLayoutEvent;
+        @BindView(R.id.image_status) ImageView mImageStatus;
 
         private OnItemClickListener mListener;
 
@@ -143,6 +145,18 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else {
                 mImageJoinerCount.setVisibility(View.GONE);
                 mTextJoinerCount.setVisibility(View.GONE);
+            }
+
+            switch (event.getMyStatus()) {
+                case 0:
+                    mImageStatus.setImageResource(View.VISIBLE);
+                    break;
+                case Event.STATUS_GOING:
+                    mImageStatus.setImageResource(R.drawable.ic_star_red_24dp);
+                    break;
+                case Event.STATUS_WENT:
+                    mImageStatus.setImageResource(R.drawable.ic_star_star_24dp);
+                    break;
             }
         }
     }

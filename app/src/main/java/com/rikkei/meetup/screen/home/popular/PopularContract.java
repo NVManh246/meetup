@@ -11,6 +11,6 @@ public class PopularContract {
     }
 
     interface Presenter {
-        void getEvents(int pageIndex, int pageSize);
+        void getEvents(String token, int pageIndex, int pageSize);
     }
 }

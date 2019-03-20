@@ -1,17 +1,10 @@
 package com.rikkei.meetup.screen.login;
 
-import android.os.Handler;
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.rikkei.meetup.data.model.user.TokenResponse;
 import com.rikkei.meetup.data.networking.ApiUtils;
 import com.rikkei.meetup.data.source.remote.UsersRemoteDateSource;
 import com.rikkei.meetup.data.source.repository.UsersRepository;
 import com.rikkei.meetup.ultis.StringUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -36,7 +29,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     }
 
     @Override
-    public void login(String email, String password) {
+    public void login(final String email, String password) {
         if(!StringUtils.checkEmail(email)) {
             mView.showErrorEmail();
             return;
@@ -56,7 +49,8 @@ public class LoginPresenter implements LoginContract.Presenter {
                             mView.hideProgress();
                             mView.showError();
                         } else {
-                            StringUtils.saveToken(mView.getViewContext(), tokenResponse.getToken().getToken());
+                            StringUtils.saveToken(mView.getViewContext(),
+                                    tokenResponse.getToken().getToken(), email);
                             mView.navigationToProfile();
                         }
                     }

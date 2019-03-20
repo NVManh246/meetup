@@ -23,6 +23,7 @@ public class StringUtils {
 
     private static final String SHARED_PREF_TOKEN = "sptoken";
     private static final String KEY_TOKEN = "token";
+    private static final String KEY_EMAIL = "email";
 
     public static String covertDate(Context context, String strDate) throws ParseException {
         Date date = new SimpleDateFormat(DATE_FORMAT).parse(strDate);
@@ -60,17 +61,26 @@ public class StringUtils {
         return matcher.matches();
     }
 
-    public static void saveToken(Context context, String token) {
+    public static void saveToken(Context context, String token, String email) {
         SharedPreferences sharedPreferences
                 = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_TOKEN, token);
+        editor.putString(KEY_EMAIL, email);
         editor.commit();
     }
 
     public static String getToken(Context context) {
         SharedPreferences sharedPreferences
                 = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
-        return "Bearer " + sharedPreferences.getString(KEY_TOKEN, null);
+        String token = sharedPreferences.getString(KEY_TOKEN, null);
+        return token != null ? "Bearer " + sharedPreferences.getString(KEY_TOKEN, null) : null;
+    }
+
+    public static String getName(Context context) {
+        SharedPreferences sharedPreferences
+                = context.getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE);
+        String email = sharedPreferences.getString(KEY_EMAIL, null);
+        return email.split("@")[0];
     }
 }

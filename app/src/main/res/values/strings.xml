@@ -46,6 +46,10 @@
     <string name="going">Going</string>
     <string name="went">Went</string>
     <string name="logout">Logout</string>
+    <string name="comfirm_logout">Are you sure you want to logout?</string>
     <string name="update_success">Update success</string>
     <string name="follow_success">Follow success</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="token_expired">Token is expired, please login again!</string>
 </resources>

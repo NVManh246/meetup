@@ -32,7 +32,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
     }
 
     @Override
-    public void register(String fullname, String email, String password) {
+    public void register(String fullname, final String email, String password) {
         if(!StringUtils.checkEmail(email)) {
             mView.showErrorEmail();
             return;
@@ -53,6 +53,8 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                             mView.showError();
                         } else {
                             mView.navigationToProfile();
+                            StringUtils.saveToken(mView.getViewContext(),
+                                    tokenResponse.getToken().getToken(), email);
                         }
                     }
                 }, new Consumer<Throwable>() {

@@ -22,6 +22,7 @@ import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventActivity;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventContract;
 import com.rikkei.meetup.screen.list_events_by_category.ListEventPresenter;
+import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
     private int mCategoryId;
     private int mPageIndex = 1;
     private int mPageSize = 10;
+    private String mToken;
 
     private ListEventContract.Presenter mPresenter;
 
@@ -71,7 +73,8 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
         setupRecyclerEvent();
         mCategoryId = getArguments().getInt(ListEventActivity.BUNDLE_CATEGORY_ID);
         mPresenter = new ListEventPresenter(this);
-        mPresenter.getEventsByCategory(mCategoryId, mPageIndex, mPageSize);
+        mToken = StringUtils.getToken(getContext());
+        mPresenter.getEventsByCategory(mToken, mCategoryId, mPageIndex, mPageSize);
     }
 
     @Override
@@ -89,7 +92,7 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
         mRecyclerEvent.addOnScrollListener(new EndLessScrollListener() {
             @Override
             public boolean onLoadMore() {
-                mPresenter.getEventsByCategory(mCategoryId, ++mPageIndex, mPageSize);
+                mPresenter.getEventsByCategory(mToken, mCategoryId, ++mPageIndex, mPageSize);
                 return true;
             }
         });
@@ -161,6 +164,6 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
     public void onRefresh() {
         mPageIndex = 1;
         mEventAdapter.clearAll();
-        mPresenter.getEventsByCategory(mCategoryId, mPageIndex, mPageSize);
+        mPresenter.getEventsByCategory(mToken, mCategoryId, mPageIndex, mPageSize);
     }
 }

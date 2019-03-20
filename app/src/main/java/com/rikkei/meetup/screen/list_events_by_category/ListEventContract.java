@@ -19,6 +19,6 @@ public interface ListEventContract {
     }
 
     interface Presenter {
-        void getEventsByCategory(int categoryId, int pageIndex, int pageSize);
+        void getEventsByCategory(String token, int categoryId, int pageIndex, int pageSize);
     }
 }

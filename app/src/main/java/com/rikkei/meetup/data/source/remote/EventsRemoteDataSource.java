@@ -26,23 +26,23 @@ public class EventsRemoteDataSource implements EventsDataSource.EventsRemoteData
     }
 
     @Override
-    public Flowable<EventsResponse> getListEvents(int pageIndex, int pageSize) {
-        return mApiClient.getListEvents(pageIndex, pageSize);
+    public Flowable<EventsResponse> getListEvents(String token, int pageIndex, int pageSize) {
+        return mApiClient.getListEvents(token, pageIndex, pageSize);
     }
 
     @Override
-    public Flowable<EventsResponse> getEventsByCategory(int categoryId, int pageIndex, int pageSize) {
-        return mApiClient.getEventsByCategory(categoryId, pageIndex, pageSize);
+    public Flowable<EventsResponse> getEventsByCategory(String token, int categoryId, int pageIndex, int pageSize) {
+        return mApiClient.getEventsByCategory(token, categoryId, pageIndex, pageSize);
     }
 
     @Override
-    public Flowable<EventsResponse> getEventsByCategory(int categoryId) {
-        return mApiClient.getEventsByCategory(categoryId);
+    public Flowable<EventsResponse> getEventsByCategory(String token, int categoryId) {
+        return mApiClient.getEventsByCategory(token, categoryId);
     }
 
     @Override
-    public Flowable<EventsResponse> getEventsByKeyword(String keyword, int pageIndex, int pageSize) {
-        return mApiClient.getEventsByKeyword(keyword, pageIndex, pageSize);
+    public Flowable<EventsResponse> getEventsByKeyword(String token, String keyword, int pageIndex, int pageSize) {
+        return mApiClient.getEventsByKeyword(token, keyword, pageIndex, pageSize);
     }
 
     @Override
