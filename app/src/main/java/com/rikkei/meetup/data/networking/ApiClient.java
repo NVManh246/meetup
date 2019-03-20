@@ -94,4 +94,12 @@ public interface ApiClient {
 
     @GET("listVenueFollowed")
     Flowable<VenuesResponse> getVenuesFollowed(@Header("Authorization") String token);
+
+    @GET("listNearlyEvents")
+    Flowable<EventsResponse> getNearEvents(
+            @Header("Authorization") String token,
+            @Query("radius") int radius,
+            @Query("longitue") String geoLong,
+            @Query("latitude") String geoLat
+    );
 }

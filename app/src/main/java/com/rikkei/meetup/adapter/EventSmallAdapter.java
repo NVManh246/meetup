@@ -1,8 +1,11 @@
 package com.rikkei.meetup.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +69,7 @@ public class EventSmallAdapter extends RecyclerView.Adapter<EventSmallAdapter.Vi
         @BindView(R.id.text_date_event) TextView mTextDate;
         @BindView(R.id.text_joiner) TextView mTextJoinerCount;
         @BindView(R.id.image_status) ImageView mImageStatus;
+        @BindView(R.id.text_description_event) TextView mTextDescription;
 
         public ViewHolder(@NonNull final View itemView, Context context,
                           List<Event> events, OnItemClickListener listener) {
@@ -86,12 +90,21 @@ public class EventSmallAdapter extends RecyclerView.Adapter<EventSmallAdapter.Vi
                 Glide.with(mContext).load(event.getPhoto()).into(mImageEvent);
             }
             mTextName.setText(event.getName());
+            if(!TextUtils.isEmpty(event.getDescriptionHtml())) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    mTextDescription.setText(Html.fromHtml(
+                            event.getDescriptionHtml(),
+                            Html.FROM_HTML_MODE_COMPACT)
+                    );
+                } else {
+                    mTextDescription.setText(Html.fromHtml(event.getDescriptionHtml()));
+                }
+            }
             try {
                 mTextDate.setText(StringUtils.getDateEventField(mContext, event));
             } catch (ParseException e) {
             }
             mTextJoinerCount.setText(String.valueOf(event.getGoingCount()));
-
             switch (event.getMyStatus()) {
                 case 0:
                     mImageStatus.setImageResource(View.VISIBLE);

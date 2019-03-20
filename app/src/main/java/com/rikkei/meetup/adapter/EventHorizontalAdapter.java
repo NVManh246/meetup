@@ -5,14 +5,14 @@ import com.rikkei.meetup.data.model.event.Event;
 
 import java.util.List;
 
-public class EventAdapter extends BaseEventAdapter {
+public class EventHorizontalAdapter extends BaseEventAdapter {
 
-    public EventAdapter(List<Event> events, OnItemClickListener listener) {
+    public EventHorizontalAdapter(List<Event> events, OnItemClickListener listener) {
         super(events, listener);
     }
 
     @Override
     public int getLayout() {
-        return R.layout.item_event;
+        return R.layout.item_horizontal_event;
     }
 }
