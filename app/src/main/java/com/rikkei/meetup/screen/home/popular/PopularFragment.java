@@ -96,6 +96,9 @@ public class PopularFragment extends Fragment implements PopularContract.View,
 
     @Override
     public void showError() {
+        if (mSwipeRefreshEvent.isRefreshing()) {
+            mSwipeRefreshEvent.setRefreshing(false);
+        }
         Toast.makeText(getContext(), getContext().getString(R.string.error), Toast.LENGTH_SHORT).show();
     }
 

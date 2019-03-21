@@ -34,10 +34,12 @@ public class EventStatusPresenter implements EventStatusContract.Presenter {
                     @Override
                     public void accept(EventsResponse eventsResponse) throws Exception {
                         mView.showEvents(eventsResponse.getListEvents().getEvents());
+                        mView.hideProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        mView.hideProgress();
                         mView.showError();
                         System.out.printf(throwable.toString());
                     }
@@ -54,10 +56,12 @@ public class EventStatusPresenter implements EventStatusContract.Presenter {
                     @Override
                     public void accept(VenuesResponse venuesResponse) throws Exception {
                         mView.showVenues(venuesResponse.getListVenue().getVenues());
+                        mView.hideProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        mView.hideProgress();
                         mView.showError();
                     }
                 });

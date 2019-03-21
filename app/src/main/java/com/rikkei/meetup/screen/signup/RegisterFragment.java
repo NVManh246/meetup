@@ -31,6 +31,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     @BindView(R.id.progress_register) ProgressBar mProgressBar;
     private Unbinder mUnbinder;
 
+    private String mFullname;
     private String mEmail;
     private String mPassword;
 
@@ -75,16 +76,22 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         mPresenter.register(fullname, mEmail, mPassword);
     }
 
+    @OnTextChanged(R.id.edit_fullname)
+    public void onTextFullnameChanged(CharSequence c) {
+        mFullname = String.valueOf(c);
+        setEnableButtonRegister(mFullname, mEmail, mPassword);
+    }
+
     @OnTextChanged(R.id.edit_email)
     public void onTextEmailChanged(CharSequence c) {
         mEmail = String.valueOf(c);
-        setEnableButtonRegister(mEmail, mPassword);
+        setEnableButtonRegister(mFullname, mEmail, mPassword);
     }
 
     @OnTextChanged(R.id.edit_password)
     public void onTextPasswordChanged(CharSequence c) {
         mPassword = String.valueOf(c);
-        setEnableButtonRegister(mEmail, mPassword);
+        setEnableButtonRegister(mFullname, mEmail, mPassword);
     }
 
     @Override
@@ -129,8 +136,9 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         return getContext();
     }
 
-    private void setEnableButtonRegister(String email, String password) {
-        if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+    private void setEnableButtonRegister(String fullname, String email, String password) {
+        if(!TextUtils.isEmpty(fullname) && !TextUtils.isEmpty(email)
+                && !TextUtils.isEmpty(password)) {
             mButtonRegister.setEnabled(true);
         } else {
             mButtonRegister.setEnabled(false);

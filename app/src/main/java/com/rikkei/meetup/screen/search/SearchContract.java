@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface SearchContract {
     interface View {
-        void showEvents(List<Event> events);
+        void showEventsUpComing(List<Event> events);
+        void showEventsPass(List<Event> events);
+        void setCount();
         void showError();
         void noResultSearching();
     }

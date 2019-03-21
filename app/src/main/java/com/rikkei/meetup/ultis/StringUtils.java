@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,12 +87,21 @@ public class StringUtils {
 
     public static String getDistance(int meter) {
         StringBuilder result = new StringBuilder();
-        if(meter < 1000) {
+        if (meter < 1000) {
             result.append(meter).append("m");
         } else {
-            float kilometer = (float) meter/1000;
-            result.append(Math.round(kilometer * 10)/10).append("km");
+            float kilometer = (float) meter / 1000;
+            result.append(Math.round(kilometer * 10) / 10).append("km");
         }
+        return result.toString();
+    }
+
+    public static String getCount(String pre, List<Event> events) {
+        StringBuilder result = new StringBuilder();
+        result.append(pre)
+                .append("(")
+                .append(events.isEmpty() ? 0 : (events.size() - 1))
+                .append(")");
         return result.toString();
     }
 }

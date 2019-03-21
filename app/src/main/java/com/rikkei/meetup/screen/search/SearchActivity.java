@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 public class SearchActivity extends AppCompatActivity implements SearchContract.View,
@@ -43,13 +47,24 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     EditText mEditSearch;
     @BindView(R.id.swipe_refresh_event)
     SwipeRefreshLayout mRefreshLayout;
-    @BindView(R.id.recycler_event)
-    RecyclerView mRecyclerEvent;
+    @BindView(R.id.recycler_event_upcoming)
+    RecyclerView mRecyclerEventUpComing;
+    @BindView(R.id.recycler_event_past)
+    RecyclerView mRecyclerEventPast;
     @BindView(R.id.text_lable_msg_result)
     TextView mTextMsg;
+    @BindView(R.id.radio_group_filter)
+    RadioGroup mRadioGroupFilter;
+    @BindView(R.id.radio_button_upcoming)
+    RadioButton mRadioButtonUpComing;
+    @BindView(R.id.radio_button_past)
+    RadioButton mRadioButtonPast;
 
-    private List<Event> mEvents;
-    private EventAdapter mEventAdapter;
+    private List<Event> mEventsUpComing;
+    private EventAdapter mEventsAdapterUpComing;
+
+    private List<Event> mEventsPast;
+    private EventAdapter mEventsAdapterPast;
 
     private SearchContract.Presenter mPresenter;
 
@@ -70,6 +85,7 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         mRefreshLayout.setOnRefreshListener(this);
         setupRecyclerEvent();
         mPresenter = new SearchPresenter(this);
+        mEditSearch.requestFocus();
         search();
     }
 
@@ -78,13 +94,43 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         finish();
     }
 
-    @Override
-    public void showEvents(List<Event> events) {
-        if (mRecyclerEvent.getVisibility() == View.GONE) {
-            mRecyclerEvent.setVisibility(View.VISIBLE);
-            mTextMsg.setVisibility(View.GONE);
+    @OnCheckedChanged({R.id.radio_button_upcoming, R.id.radio_button_past})
+    public void onRadioButtonCheckChanged(CompoundButton button, boolean checked) {
+        if(checked) {
+            switch (button.getId()) {
+                case R.id.radio_button_upcoming:
+                    mRecyclerEventUpComing.setVisibility(View.VISIBLE);
+                    mRecyclerEventPast.setVisibility(View.GONE);
+                    break;
+                case R.id.radio_button_past:
+                    mRecyclerEventUpComing.setVisibility(View.GONE);
+                    mRecyclerEventPast.setVisibility(View.VISIBLE);
+                    break;
+            }
         }
-        mEventAdapter.insertData(events);
+    }
+
+    @Override
+    public void showEventsUpComing(List<Event> events) {
+        if (events.isEmpty()) {
+            mPresenter.getEventsByKeyword(mToken, mKeyword, ++mPageIndex, mPageSize);
+        } else {
+            mEventsAdapterUpComing.insertData(events);
+            showRecycler();
+        }
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void showEventsPass(List<Event> events) {
+        if (events.isEmpty()) {
+            mPresenter.getEventsByKeyword(mToken, mKeyword, ++mPageIndex, mPageSize);
+        } else {
+            mEventsAdapterPast.insertData(events);
+            showRecycler();
+        }
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
         }
@@ -97,35 +143,66 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void noResultSearching() {
-        if (mEvents.size() == 0) {
-            mRecyclerEvent.setVisibility(View.GONE);
+        if (mEventsUpComing.isEmpty() && mEventsPast.isEmpty()) {
+            mRecyclerEventUpComing.setVisibility(View.GONE);
+            mRecyclerEventPast.setVisibility(View.GONE);
             mTextMsg.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(this, getString(R.string.final_result), Toast.LENGTH_SHORT).show();
-            mEventAdapter.removeItemNull();
+            mEventsAdapterUpComing.removeItemNull();
+            mEventsAdapterPast.removeItemNull();
         }
     }
 
     @Override
+    public void setCount() {
+
+        mRadioButtonUpComing.setText(StringUtils
+                .getCount(getString(R.string.current_upcoming), mEventsUpComing));
+        mRadioButtonPast.setText(StringUtils.getCount(getString(R.string.past), mEventsPast));
+    }
+
+    @Override
     public void onItemClick(int position) {
-        Intent intent = EventDetailActivity.getEventDetailIntent(this, mEvents.get(position));
+        Event event;
+        if(mRadioButtonPast.isChecked()){
+            event = mEventsPast.get(position);
+        } else {
+            event = mEventsUpComing.get(position);
+        }
+        Intent intent = EventDetailActivity.getEventDetailIntent(this, event);
         startActivity(intent);
     }
 
     @Override
     public void onRefresh() {
         mPageIndex = FIRST_PAGE_INDEX;
-        mEventAdapter.clearAll();
+        mEventsAdapterUpComing.clearAll();
+        mEventsAdapterPast.clearAll();
         mPresenter.getEventsByKeyword(mToken, mKeyword, mPageIndex, mPageSize);
     }
 
     private void setupRecyclerEvent() {
-        mEvents = new ArrayList<>();
-        mEventAdapter = new EventAdapter(mEvents, this);
-        mRecyclerEvent.setAdapter(mEventAdapter);
-        mRecyclerEvent.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerEvent.addItemDecoration(new CustomItemDecoration(SPACING));
-        mRecyclerEvent.addOnScrollListener(new EndLessScrollListener() {
+        mEventsUpComing = new ArrayList<>();
+        mEventsPast = new ArrayList<>();
+        mEventsAdapterUpComing = new EventAdapter(mEventsUpComing, this);
+        mEventsAdapterPast = new EventAdapter(mEventsPast, this);
+        mRecyclerEventUpComing.setAdapter(mEventsAdapterUpComing);
+        mRecyclerEventPast.setAdapter(mEventsAdapterPast);
+
+        mRecyclerEventUpComing.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerEventUpComing.addItemDecoration(new CustomItemDecoration(SPACING));
+        mRecyclerEventUpComing.addOnScrollListener(new EndLessScrollListener() {
+            @Override
+            public boolean onLoadMore() {
+                mPresenter.getEventsByKeyword(mToken, mKeyword, ++mPageIndex, mPageSize);
+                return true;
+            }
+        });
+
+        mRecyclerEventPast.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerEventPast.addItemDecoration(new CustomItemDecoration(SPACING));
+        mRecyclerEventPast.addOnScrollListener(new EndLessScrollListener() {
             @Override
             public boolean onLoadMore() {
                 mPresenter.getEventsByKeyword(mToken, mKeyword, ++mPageIndex, mPageSize);
@@ -142,7 +219,8 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
                 if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     mKeyword = mEditSearch.getText().toString();
                     mPageIndex = FIRST_PAGE_INDEX;
-                    mEventAdapter.clearAll();
+                    mEventsAdapterUpComing.clearAll();
+                    mEventsAdapterPast.clearAll();
                     mPresenter.getEventsByKeyword(mToken, mKeyword, mPageIndex, mPageSize);
                     hideSoftKeyboard();
                 }
@@ -155,5 +233,16 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
+
+    private void showRecycler() {
+        if(!mEventsPast.isEmpty() || !mEventsUpComing.isEmpty()) {
+            mTextMsg.setVisibility(View.GONE);
+            if(mRadioButtonPast.isChecked()) {
+                mRecyclerEventPast.setVisibility(View.VISIBLE);
+            } else {
+                mRecyclerEventUpComing.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

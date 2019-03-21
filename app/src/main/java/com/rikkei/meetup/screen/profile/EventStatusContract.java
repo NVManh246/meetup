@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface EventStatusContract {
     interface View {
+        void hideProgress();
         void showEvents(List<Event> events);
         void showVenues(List<Venue> venues);
         void showError();

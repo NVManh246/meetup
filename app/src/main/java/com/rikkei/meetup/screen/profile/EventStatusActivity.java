@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
@@ -42,6 +43,8 @@ public class EventStatusActivity extends AppCompatActivity
     RecyclerView mRecycler;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mRefreshLayout;
+    @BindView(R.id.progress)
+    ProgressBar mProgressBar;
 
     private List<Event> mEvents;
     private EventAdapter mEventAdapter;
@@ -128,6 +131,11 @@ public class EventStatusActivity extends AppCompatActivity
                     .getEventDetailIntent(this, mEvents.get(position));
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

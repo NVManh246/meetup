@@ -121,6 +121,11 @@ public class DateEventFragment extends Fragment
     }
 
     @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
     public void showEvents(List<Event> events) {
     }
 

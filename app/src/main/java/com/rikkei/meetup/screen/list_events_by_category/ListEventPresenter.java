@@ -66,10 +66,12 @@ public class ListEventPresenter implements ListEventContract.Presenter {
                             } else {
                                 mView.showEvents(events);
                             }
+                            mView.hideProgress();
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
+                            mView.hideProgress();
                             mView.showError();
                         }
                     });
