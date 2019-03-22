@@ -2,13 +2,15 @@ package com.rikkei.meetup.screen.search;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,8 +25,12 @@ import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.common.EndLessScrollListener;
+import com.rikkei.meetup.common.NetworkChangeReceiver;
+import com.rikkei.meetup.common.OnNetworkChangedListener;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
+import com.rikkei.meetup.ultis.AnimUtils;
+import com.rikkei.meetup.ultis.NetworkUtils;
 import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
@@ -36,7 +42,8 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 public class SearchActivity extends AppCompatActivity implements SearchContract.View,
-        EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+        EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
+        OnNetworkChangedListener {
 
     private static final int SPACING = 40;
     private static final int PAGE_SIZE_DEFAULT = 10;
@@ -59,6 +66,8 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     RadioButton mRadioButtonUpComing;
     @BindView(R.id.radio_button_past)
     RadioButton mRadioButtonPast;
+    @BindView(R.id.text_alert_network)
+    TextView mTextAlertNetWork;
 
     private List<Event> mEventsUpComing;
     private EventAdapter mEventsAdapterUpComing;
@@ -68,9 +77,14 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     private SearchContract.Presenter mPresenter;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+    private IntentFilter mIntentFilterNetwork;
     private String mKeyword;
     private int mPageIndex = FIRST_PAGE_INDEX;
     private int mPageSize = PAGE_SIZE_DEFAULT;
+    private boolean mIsShowAlert;
+    private boolean mIsLoadingError;
+    private int mHeightAlert;
 
     public static Intent getSearchIntent(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
@@ -87,6 +101,21 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
         mPresenter = new SearchPresenter(this);
         mEditSearch.requestFocus();
         search();
+        mHeightAlert = (int) getResources().getDimension(R.dimen.dp_20);
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+        mIntentFilterNetwork = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(mNetworkChangeReceiver, mIntentFilterNetwork);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
 
     @OnClick(R.id.image_back)
@@ -138,7 +167,12 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void showError() {
-        Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+        if(mRadioButtonPast.isChecked()){
+            mEventsAdapterPast.removeItemNull();
+        } else {
+            mEventsAdapterUpComing.removeItemNull();
+        }
+        mIsLoadingError = true;
     }
 
     @Override
@@ -156,7 +190,6 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void setCount() {
-
         mRadioButtonUpComing.setText(StringUtils
                 .getCount(getString(R.string.current_upcoming), mEventsUpComing));
         mRadioButtonPast.setText(StringUtils.getCount(getString(R.string.past), mEventsPast));
@@ -242,6 +275,35 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
                 mRecyclerEventPast.setVisibility(View.VISIBLE);
             } else {
                 mRecyclerEventUpComing.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onNetworkChanged(int status) {
+        if (status == NetworkUtils.NOT_CONNECTED) {
+            if(!mIsShowAlert) {
+                mTextAlertNetWork.setText(R.string.not_connect);
+                mTextAlertNetWork.setBackgroundColor(getResources().getColor(R.color.color_milano_red));
+                AnimUtils.translateY(mTextAlertNetWork, 0, -mHeightAlert);
+                mIsShowAlert = true;
+            }
+        } else {
+            if (mIsShowAlert) {
+                mTextAlertNetWork.setBackgroundColor(
+                        getResources().getColor(R.color.color_japanese_laurel));
+                mTextAlertNetWork.setText(R.string.connecting);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AnimUtils.translateY(mTextAlertNetWork, -mHeightAlert, 0);
+                    }
+                }, 2000);
+                mIsShowAlert = false;
+            }
+            if(!TextUtils.isEmpty(mKeyword) && mIsLoadingError) {
+                mPresenter.getEventsByKeyword(mToken, mKeyword, mPageIndex, mPageSize);
+                mIsLoadingError = false;
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.rikkei.meetup.screen.home.news;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,17 +10,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.NewsAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.common.EndLessScrollListener;
+import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.data.model.news.News;
+import com.rikkei.meetup.ultis.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class NewsFragment extends Fragment implements NewsContract.View,
-        SwipeRefreshLayout.OnRefreshListener, NewsAdapter.OnItemClickListener {
+        SwipeRefreshLayout.OnRefreshListener, NewsAdapter.OnItemClickListener, Observer {
 
     private static final int SPACING = 40;
     private static final int PAGE_SIZE_DEFAULT = 10;
@@ -45,6 +50,8 @@ public class NewsFragment extends Fragment implements NewsContract.View,
     private NewsContract.Presenter mPresenter;
     private int mPageIndex = FIRST_PAGE_INDEX;
     private int mPageSize = PAGE_SIZE_DEFAULT;
+    private boolean mIsLoadingError;
+    private int statusNetwork;
 
     public static NewsFragment newInstance() {
         NewsFragment fragment = new NewsFragment();
@@ -66,7 +73,12 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         mSwipeRefreshNews.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         setupRecyclerNews();
         mPresenter = new NewsPresenter(this);
-        mPresenter.getListNews(mPageIndex, mPageSize);
+        if(statusNetwork == NetworkUtils.CONNECTED) {
+            mPresenter.getListNews(mPageIndex, mPageSize);
+        } else {
+            mPresenter.getListNewsDB(mPageIndex - 1, mPageSize);
+        }
+        mPresenter.saveNewsDB();
     }
 
     @Override
@@ -84,7 +96,11 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         mRecyclerNews.addOnScrollListener(new EndLessScrollListener() {
             @Override
             public boolean onLoadMore() {
-                mPresenter.getListNews(++mPageIndex, mPageSize);
+                if(statusNetwork == NetworkUtils.CONNECTED) {
+                    mPresenter.getListNews(++mPageIndex, mPageSize);
+                } else {
+                    mPresenter.getListNewsDB(++mPageIndex - 1, mPageSize);
+                }
                 return true;
             }
         });
@@ -111,14 +127,34 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         if(mSwipeRefreshNews.isRefreshing()) {
             mSwipeRefreshNews.setRefreshing(false);
         }
-        Toast.makeText(getContext(), getContext().getString(R.string.error), Toast.LENGTH_SHORT).show();
+        mIsLoadingError = true;
+        mNewsAdapter.removeItemNull();
+        if(mPageIndex > 1) {
+            mPageIndex--;
+        }
+        Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showEndData() {
+        mNewsAdapter.removeItemNull();
+        Toast.makeText(getContext(), R.string.end, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getContext();
     }
 
     @Override
     public void onRefresh() {
         mPageIndex = FIRST_PAGE_INDEX;
         mNewsAdapter.clearAll();
-        mPresenter.getListNews(mPageIndex, mPageSize);
+        if(statusNetwork == NetworkUtils.CONNECTED) {
+            mPresenter.getListNews(mPageIndex, mPageSize);
+        } else {
+            mPresenter.getListNewsDB(mPageIndex - 1, mPageSize);
+        }
     }
 
     @Override
@@ -127,5 +163,16 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         Intent browserIntent = new Intent(Intent.ACTION_VIEW);
         browserIntent.setData(Uri.parse(url));
         startActivity(browserIntent);
+    }
+
+    @Override
+    public void update(int status) {
+        statusNetwork = status;
+        if(status == NetworkUtils.CONNECTED) {
+            if(mIsLoadingError) {
+                mPresenter.getListNews(mPageIndex, mPageSize);
+                mIsLoadingError = false;
+            }
+        }
     }
 }

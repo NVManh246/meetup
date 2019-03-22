@@ -10,30 +10,39 @@ import com.rikkei.meetup.R;
 import com.rikkei.meetup.screen.home.news.NewsFragment;
 import com.rikkei.meetup.screen.home.popular.PopularFragment;
 
-public class HomePagerAdapter extends FragmentPagerAdapter {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final int PAGER_NUMBER = 2;
+public class PagerAdapter extends FragmentPagerAdapter {
+
     private Context mContext;
+    private List<Fragment> mFragments;
+    private List<String> mTitles;
 
-    public HomePagerAdapter(FragmentManager fm, Context context) {
+    public PagerAdapter(FragmentManager fm) {
         super(fm);
-        mContext = context;
+        mFragments = new ArrayList<>();
+        mTitles = new ArrayList<>();
     }
 
     @Override
     public Fragment getItem(int i) {
-        return i == 0 ? NewsFragment.newInstance() : PopularFragment.newInstance();
+        return mFragments.get(i);
     }
 
     @Override
     public int getCount() {
-        return PAGER_NUMBER;
+        return mFragments.size();
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return position == 0 ? mContext.getString(R.string.news)
-                : mContext.getString(R.string.popular);
+        return mTitles.get(position);
+    }
+
+    public void addFragment(Fragment fragment, String title) {
+        mFragments.add(fragment);
+        mTitles.add(title);
     }
 }

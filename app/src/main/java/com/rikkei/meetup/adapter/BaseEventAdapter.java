@@ -96,8 +96,10 @@ public abstract class BaseEventAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public void removeItemNull() {
-        mEvents.remove(mEvents.size() - 1);
-        notifyItemRemoved(mEvents.size());
+        if (!mEvents.isEmpty() && mEvents.get(mEvents.size() - 1) == null) {
+            mEvents.remove(mEvents.size() - 1);
+            notifyItemRemoved(mEvents.size());
+        }
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {

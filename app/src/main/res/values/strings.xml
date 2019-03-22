@@ -54,4 +54,6 @@
     <string name="token_expired">Token is expired, please login again!</string>
     <string name="setting">Setting</string>
     <string name="please_grant_permission">Please grant permission to use the LOCATION to experience this functionality</string>
+    <string name="not_connect">Not connected!</string>
+    <string name="connecting">Connecting...!</string>
 </resources>

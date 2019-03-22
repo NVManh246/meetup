@@ -1,26 +1,39 @@
 package com.rikkei.meetup.screen.main;
 
 import android.content.Context;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import android.widget.TextView;
+
 import com.rikkei.meetup.R;
+import com.rikkei.meetup.common.NetworkChangeReceiver;
+import com.rikkei.meetup.common.OnNetworkChangedListener;
+import com.rikkei.meetup.common.observer.NetworkData;
 import com.rikkei.meetup.screen.browser.BrowserFragment;
 import com.rikkei.meetup.screen.home.HomeFragment;
 import com.rikkei.meetup.screen.mypage.MyPageFragment;
 import com.rikkei.meetup.screen.near.NearFragment;
 import com.rikkei.meetup.ultis.StringUtils;
+import com.rikkei.meetup.ultis.AnimUtils;
+import com.rikkei.meetup.ultis.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity
-        implements BottomNavigationView.OnNavigationItemSelectedListener, MainContract.View {
+public class MainActivity extends AppCompatActivity implements
+        BottomNavigationView.OnNavigationItemSelectedListener,
+        OnNetworkChangedListener,  MainContract.View {
 
+    private TextView mTextAlertNetwork;
     private BottomNavigationView mBottomTabBar;
     private HomeFragment mHomeFragment;
     private NearFragment mNearFragment;
@@ -31,11 +44,19 @@ public class MainActivity extends AppCompatActivity
     private String mToken;
     private MainContract.Presenter mPresenter;
 
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+    private IntentFilter mIntentFilterNetwork;
+    private NetworkData mNetworkData;
+
+    private int mHeightAlert;
+    private boolean mIsShowAlert;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mBottomTabBar = findViewById(R.id.navigation_bottom_bar);
+        mTextAlertNetwork = findViewById(R.id.text_alert_network);
         mBottomTabBar.setOnNavigationItemSelectedListener(this);
         mPresenter = new MainPresenter(this);
         mToken = StringUtils.getToken(this);
@@ -50,6 +71,24 @@ public class MainActivity extends AppCompatActivity
                 .commit();
         mCurruntFragment = mHomeFragment;
 
+        mNetworkChangeReceiver = new NetworkChangeReceiver(this);
+        mIntentFilterNetwork = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        mNetworkData = new NetworkData();
+        mNetworkData.registerObserver(mHomeFragment);
+
+        mHeightAlert = (int) getResources().getDimension(R.dimen.dp_20);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(mNetworkChangeReceiver, mIntentFilterNetwork);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mNetworkChangeReceiver);
     }
 
     @Override
@@ -74,7 +113,7 @@ public class MainActivity extends AppCompatActivity
     private void showFragment(int i) {
         switch (i) {
             case 0:
-                if(mHomeFragment == null) {
+                if (mHomeFragment == null) {
                     mHomeFragment = HomeFragment.newInstance();
                     mFragmentManager.beginTransaction()
                             .show(mCurruntFragment)
@@ -89,12 +128,13 @@ public class MainActivity extends AppCompatActivity
                 mCurruntFragment = mHomeFragment;
                 break;
             case 1:
-                if(mNearFragment == null) {
+                if (mNearFragment == null) {
                     mNearFragment = NearFragment.newInstance();
                     mFragmentManager.beginTransaction()
                             .hide(mCurruntFragment)
                             .add(R.id.frame_container, mNearFragment)
                             .commit();
+                    mNetworkData.registerObserver(mNearFragment);
                 } else {
                     mFragmentManager.beginTransaction()
                             .hide(mCurruntFragment)
@@ -104,12 +144,13 @@ public class MainActivity extends AppCompatActivity
                 mCurruntFragment = mNearFragment;
                 break;
             case 2:
-                if(mBrowserFragment == null) {
+                if (mBrowserFragment == null) {
                     mBrowserFragment = BrowserFragment.newInstance();
                     mFragmentManager.beginTransaction()
                             .hide(mCurruntFragment)
                             .add(R.id.frame_container, mBrowserFragment)
                             .commit();
+                    mNetworkData.registerObserver(mBrowserFragment);
                 } else {
                     mFragmentManager.beginTransaction()
                             .hide(mCurruntFragment)
@@ -119,12 +160,13 @@ public class MainActivity extends AppCompatActivity
                 mCurruntFragment = mBrowserFragment;
                 break;
             case 3:
-                if(mMyPageFragment == null) {
+                if (mMyPageFragment == null) {
                     mMyPageFragment = MyPageFragment.newInstance();
                     mFragmentManager.beginTransaction()
                             .hide(mCurruntFragment)
                             .add(R.id.frame_container, mMyPageFragment)
                             .commit();
+                    mNetworkData.registerObserver(mMyPageFragment);
                 } else {
                     mFragmentManager.beginTransaction()
                             .hide(mCurruntFragment)
@@ -144,5 +186,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Context getViewContext() {
         return this;
+    }
+
+    public void onNetworkChanged(int status) {
+        mNetworkData.notifyObservers(status);
+        if (status == NetworkUtils.NOT_CONNECTED) {
+            if(!mIsShowAlert) {
+                mTextAlertNetwork.setText(R.string.not_connect);
+                mTextAlertNetwork.setBackgroundColor(getResources().getColor(R.color.color_milano_red));
+                AnimUtils.translateY(mTextAlertNetwork, 0, -mHeightAlert);
+                mIsShowAlert = true;
+            }
+        } else {
+            if (mIsShowAlert) {
+                mTextAlertNetwork.setBackgroundColor(
+                        getResources().getColor(R.color.color_japanese_laurel));
+                mTextAlertNetwork.setText(R.string.connecting);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AnimUtils.translateY(mTextAlertNetwork, -mHeightAlert, 0);
+                    }
+                }, 2000);
+                mIsShowAlert = false;
+            }
+        }
     }
 }

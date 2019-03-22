@@ -26,7 +26,6 @@ import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,9 +43,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventHorizontalAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
+import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.data.model.event.Venue;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
+import com.rikkei.meetup.ultis.NetworkUtils;
 import com.rikkei.meetup.ultis.StringUtils;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, NearContract.View,
         EventHorizontalAdapter.OnItemClickListener, GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener {
+        GoogleMap.OnInfoWindowClickListener, Observer {
 
     private static final int PERMISSION_REQUEST_CODE = 111;
     private static final int SETTING_REQUEST_CODE = 222;
@@ -174,7 +175,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
                     }
                 } else {
                     mToken = StringUtils.getToken(getContext());
-                    if(mToken == null) {
+                    if (mToken == null) {
                         mPresenter.getNearEvents(mToken, RADIUS,
                                 String.valueOf(mCenterLocation.getLongitude()),     //0.0
                                 String.valueOf(mCenterLocation.getLatitude()));
@@ -395,7 +396,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
     public void showEvents(List<Event> events) {
         mEventHorizontalAdapter.clearAll();
         mEventHorizontalAdapter.insertDataNotLoadMore(events);
-        for(Marker marker : mMarkers) {
+        for (Marker marker : mMarkers) {
             marker.remove();
         }
         addMarkerEvent(events);
@@ -403,7 +404,6 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void showError() {
-        Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -480,8 +480,8 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        for(int i = 0; i < mMarkers.size(); i++) {
-            if(mMarkers.get(i).equals(marker)) {
+        for (int i = 0; i < mMarkers.size(); i++) {
+            if (mMarkers.get(i).equals(marker)) {
                 mRecyclerEvent.scrollToPosition(i);
                 break;
             }
@@ -496,6 +496,17 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
                 Intent intent = EventDetailActivity.getEventDetailIntent(getContext(), mEvents.get(i));
                 startActivity(intent);
                 break;
+            }
+        }
+    }
+
+    @Override
+    public void update(int status) {
+        if(status == NetworkUtils.CONNECTED) {
+            if(mCenterLocation != null) {
+                mPresenter.getNearEvents(mToken, RADIUS,
+                        String.valueOf(mCenterLocation.getLongitude()),
+                        String.valueOf(mCenterLocation.getLatitude()));
             }
         }
     }

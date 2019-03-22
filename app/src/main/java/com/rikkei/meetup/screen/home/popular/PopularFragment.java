@@ -18,15 +18,17 @@ import com.rikkei.meetup.R;
 import com.rikkei.meetup.adapter.EventAdapter;
 import com.rikkei.meetup.common.CustomItemDecoration;
 import com.rikkei.meetup.common.EndLessScrollListener;
+import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.data.model.event.Event;
 import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
 import com.rikkei.meetup.ultis.StringUtils;
+import com.rikkei.meetup.ultis.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PopularFragment extends Fragment implements PopularContract.View,
-        EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+        EventAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, Observer {
 
     private static final int SPACING = 40;
     private static final int PAGE_SIZE_DEFAULT = 10;
@@ -41,6 +43,7 @@ public class PopularFragment extends Fragment implements PopularContract.View,
     private int mPageIndex = FIRST_PAGE_INDEX;
     private int mPageSize = PAGE_SIZE_DEFAULT;
     private String mToken;
+    private boolean mIsLoadingError;
 
     public static PopularFragment newInstance() {
         PopularFragment fragment = new PopularFragment();
@@ -99,7 +102,8 @@ public class PopularFragment extends Fragment implements PopularContract.View,
         if (mSwipeRefreshEvent.isRefreshing()) {
             mSwipeRefreshEvent.setRefreshing(false);
         }
-        Toast.makeText(getContext(), getContext().getString(R.string.error), Toast.LENGTH_SHORT).show();
+        mIsLoadingError = true;
+        mEventAdapter.removeItemNull();
     }
 
     @Override
@@ -115,5 +119,15 @@ public class PopularFragment extends Fragment implements PopularContract.View,
         mPageIndex = FIRST_PAGE_INDEX;
         mEventAdapter.clearAll();
         mPresenter.getEvents(mToken, mPageIndex, mPageSize);
+    }
+
+    @Override
+    public void update(int status) {
+        if(status == NetworkUtils.CONNECTED) {
+            if(mIsLoadingError) {
+                mPresenter.getEvents(mToken, mPageIndex, mPageSize);
+                mIsLoadingError = false;
+            }
+        }
     }
 }

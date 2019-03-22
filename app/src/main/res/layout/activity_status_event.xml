@@ -38,4 +38,15 @@
         android:layout_gravity="center"
         android:layout_marginTop="?attr/actionBarSize"/>
 
+    <TextView
+        android:id="@+id/text_alert_network"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_20"
+        android:background="@android:color/holo_red_dark"
+        android:text="@string/not_connect"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="-20dp"/>
+
 </FrameLayout>
