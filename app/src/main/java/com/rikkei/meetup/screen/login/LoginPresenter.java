@@ -34,7 +34,7 @@ public class LoginPresenter implements LoginContract.Presenter {
             mView.showErrorEmail();
             return;
         }
-        if(password.length() < MIN_LENGTH_PASSWORD || password.length() > MAX_LENGTH_PASSWORD) {
+        if (password.length() < MIN_LENGTH_PASSWORD || password.length() > MAX_LENGTH_PASSWORD) {
             mView.showErrorPassword();
             return;
         }
@@ -45,7 +45,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 .subscribe(new Consumer<TokenResponse>() {
                     @Override
                     public void accept(TokenResponse tokenResponse) throws Exception {
-                        if(tokenResponse.getStatus() == 0) {
+                        if (tokenResponse.getStatus() == 0) {
                             mView.hideProgress();
                             mView.showError();
                         } else {

@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
@@ -29,6 +32,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     @BindView(R.id.edit_fullname) EditText mEditFullname;
     @BindView(R.id.button_register) Button mButtonRegister;
     @BindView(R.id.progress_register) ProgressBar mProgressBar;
+    @BindView(R.id.text_login) TextView mTextLogin;
     private Unbinder mUnbinder;
 
     private String mFullname;
@@ -65,6 +69,8 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     @OnClick(R.id.text_login)
     public void onLoginClick() {
         getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                        R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.frame_my_page, LoginFragment.newInstance())
                 .addToBackStack(null)
                 .commit();
@@ -74,6 +80,9 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     public void onButtonRegisterClick() {
         String fullname = mEditFullname.getText().toString();
         mPresenter.register(fullname, mEmail, mPassword);
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     @OnTextChanged(R.id.edit_fullname)
@@ -99,6 +108,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         mProgressBar.setVisibility(View.VISIBLE);
         mButtonRegister.setText("");
         mButtonRegister.setClickable(false);
+        mTextLogin.setClickable(false);
     }
 
     @Override
@@ -106,6 +116,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         mProgressBar.setVisibility(View.GONE);
         mButtonRegister.setText(R.string.register);
         mButtonRegister.setClickable(true);
+        mTextLogin.setClickable(true);
     }
 
     @Override
@@ -126,7 +137,9 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
 
     @Override
     public void navigationToProfile() {
+        getFragmentManager().popBackStack();
         getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.frame_my_page, ProfileFragment.newInstance())
                 .commit();
     }

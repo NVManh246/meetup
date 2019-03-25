@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -71,6 +72,7 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordCo
 
     private void setupToolbar() {
         mActivity.setSupportActionBar(mToolbar);
+        mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +95,9 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordCo
     @OnClick(R.id.button_forgot_password)
     public void onButtonForgotPasswordClick() {
         mPresenter.forgotPassword(mEmail);
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -100,6 +105,7 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordCo
         mProgress.setVisibility(View.VISIBLE);
         mButtonForgotPassword.setText("");
         mButtonForgotPassword.setClickable(false);
+        mToolbar.setNavigationOnClickListener(null);
     }
 
     @Override
@@ -107,6 +113,12 @@ public class ForgotPasswordFragment extends Fragment implements ForgotPasswordCo
         mProgress.setVisibility(View.GONE);
         mButtonForgotPassword.setText(R.string.reset_password);
         mButtonForgotPassword.setClickable(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.onBackPressed();
+            }
+        });
     }
 
     @Override

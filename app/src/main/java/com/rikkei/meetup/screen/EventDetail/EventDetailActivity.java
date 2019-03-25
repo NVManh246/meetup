@@ -38,6 +38,7 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
     private static final String EXTRA_EVENT = "event";
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.text_title_toolbar) TextView mTextTitleToolbar;
     @BindView(R.id.image_event) ImageView mImageEvent;
     @BindView(R.id.text_name_event) TextView mTextNameEvent;
     @BindView(R.id.text_date_event) TextView mTextDate;
@@ -108,8 +109,9 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
     }
 
     private void setupToolbar() {
-        mToolbar.setTitle(mEvent.getName());
+        mTextTitleToolbar.setText(mEvent.getName());
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

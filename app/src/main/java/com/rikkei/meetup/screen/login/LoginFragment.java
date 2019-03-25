@@ -11,15 +11,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.screen.forgotpassword.ForgotPasswordFragment;
 import com.rikkei.meetup.screen.profile.ProfileFragment;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,6 +32,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.button_login) Button mButtonLogin;
     @BindView(R.id.progress_login) ProgressBar mProgress;
+    @BindView(R.id.text_forgot_password) TextView mTextForgotPassword;
 
     private Unbinder mUnbinder;
     private AppCompatActivity mActivity;
@@ -75,6 +77,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     private void setupToolbar() {
         mActivity.setSupportActionBar(mToolbar);
+        mActivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +90,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @OnClick(R.id.text_forgot_password)
     public void onForgotPasswordClick() {
         getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                        R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.frame_my_page, ForgotPasswordFragment.newInstance())
                 .addToBackStack(null)
                 .commit();
@@ -95,6 +100,9 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @OnClick(R.id.button_login)
     public void onButtonLoginClick() {
         mPresenter.login(mEmail, mPassword);
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
     }
 
     @OnTextChanged(R.id.edit_email)
@@ -122,6 +130,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         mProgress.setVisibility(View.VISIBLE);
         mButtonLogin.setText("");
         mButtonLogin.setClickable(false);
+        mTextForgotPassword.setClickable(false);
+        mToolbar.setNavigationOnClickListener(null);
     }
 
     @Override
@@ -129,6 +139,13 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         mProgress.setVisibility(View.GONE);
         mButtonLogin.setText(R.string.login);
         mButtonLogin.setClickable(true);
+        mTextForgotPassword.setClickable(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.onBackPressed();
+            }
+        });
     }
 
     @Override
@@ -150,6 +167,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void navigationToProfile() {
         getFragmentManager().popBackStack();
         getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.frame_my_page, ProfileFragment.newInstance())
                 .commit();
     }

@@ -13,6 +13,12 @@ public class Genre implements Parcelable {
     @SerializedName("slug")
     private String mSlug;
 
+    public Genre(int id, String name, String slug) {
+        mId = id;
+        mName = name;
+        mSlug = slug;
+    }
+
     public Genre() {
     }
 

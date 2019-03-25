@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -68,6 +69,10 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
     RadioButton mRadioButtonPast;
     @BindView(R.id.text_alert_network)
     TextView mTextAlertNetWork;
+    @BindView(R.id.text_alert_connection_error)
+    TextView mTextAlertConnectionError;
+    @BindView(R.id.progress)
+    ProgressBar mProgress;
 
     private List<Event> mEventsUpComing;
     private EventAdapter mEventsAdapterUpComing;
@@ -167,6 +172,9 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
 
     @Override
     public void showError() {
+        if(mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
         if(mRadioButtonPast.isChecked()){
             mEventsAdapterPast.removeItemNull();
         } else {
@@ -186,6 +194,28 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
             mEventsAdapterUpComing.removeItemNull();
             mEventsAdapterPast.removeItemNull();
         }
+    }
+
+    @Override
+    public void showProgress() {
+        mProgress.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showAlertConnectionError() {
+        if(mEventsUpComing.isEmpty() && mEventsPast.isEmpty()) {
+            mTextAlertConnectionError.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideAlertConnectionError() {
+        mTextAlertConnectionError.setVisibility(View.GONE);
     }
 
     @Override
@@ -256,6 +286,8 @@ public class SearchActivity extends AppCompatActivity implements SearchContract.
                     mEventsAdapterPast.clearAll();
                     mPresenter.getEventsByKeyword(mToken, mKeyword, mPageIndex, mPageSize);
                     hideSoftKeyboard();
+                    mProgress.setVisibility(View.VISIBLE);
+                    mTextMsg.setVisibility(View.GONE);
                 }
                 return false;
             }

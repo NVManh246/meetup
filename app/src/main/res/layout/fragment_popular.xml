@@ -5,10 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_event"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_gallery"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_event"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_gallery"/>
+
+        <TextView
+            android:id="@+id/text_alert_connection_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/conection_error"
+            android:textColor="@color/color_mine_shaft"
+            android:visibility="gone"
+            android:background="@android:color/white"/>
+
+    </FrameLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

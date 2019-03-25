@@ -20,11 +20,11 @@
 
     <View
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="0.5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_alert"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/color_alto"/>
 
     <Button
         android:id="@+id/button_setting"
@@ -36,7 +36,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:textSize="@dimen/sp_18"
         android:textColor="@color/colorPrimary"
-        android:background="@drawable/background_button_profile"
+        android:background="?attr/selectableItemBackground"
         android:padding="@dimen/dp_10"/>
 
 </android.support.constraint.ConstraintLayout>

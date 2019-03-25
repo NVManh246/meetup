@@ -1,10 +1,12 @@
 package com.rikkei.meetup.screen.list_events_by_category.date_event;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +43,7 @@ public class DateEventFragment extends Fragment
     private static final int STT_EVENT_FOREVER = 6;
     private static final int SPACING = 30;
 
+    private AppCompatActivity mActivity;
     private List<RecyclerView> mRecyclerEvents;
     private List<List<Event>> mEvents;
     private List<EventSmallAdapter> mAdapters;
@@ -58,6 +61,14 @@ public class DateEventFragment extends Fragment
         DateEventFragment fragment = new DateEventFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof AppCompatActivity) {
+            mActivity = (AppCompatActivity) context;
+        }
     }
 
     @Nullable
