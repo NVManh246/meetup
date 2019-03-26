@@ -23,8 +23,10 @@ public class StringUtils {
     public static final int TIME_MILLIS_OF_DAY = 86400000;
 
     private static final String SHARED_PREF_TOKEN = "sptoken";
+    private static final String SHARED_PREF_SETTING = "sp_setting";
     private static final String KEY_TOKEN = "token";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_RUN_FIRST_TIME = "run_first_time";
 
     public static String covertDate(Context context, String strDate) throws ParseException {
         Date date = new SimpleDateFormat(DATE_FORMAT).parse(strDate);
@@ -103,5 +105,30 @@ public class StringUtils {
                 .append(events.isEmpty() ? 0 : (events.size() - 1))
                 .append(")");
         return result.toString();
+    }
+
+    public static String getContentNotification(Context context, int size) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(context.getString(R.string.update_success))
+                .append(" ")
+                .append(size)
+                .append(" ")
+                .append(context.getString(R.string.news));
+        return builder.toString();
+    }
+
+    public static boolean isRunFirstTime(Context context) {
+        SharedPreferences sharedPreferences
+                = context.getSharedPreferences(SHARED_PREF_SETTING, Context.MODE_PRIVATE);
+        boolean isRunFirstTime = sharedPreferences.getBoolean(KEY_RUN_FIRST_TIME, false);
+        return isRunFirstTime;
+    }
+
+    public static void saveIsRunFirstTime(Context context, boolean isRunFirstTime) {
+        SharedPreferences sharedPreferences
+                = context.getSharedPreferences(SHARED_PREF_SETTING, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_RUN_FIRST_TIME, isRunFirstTime);
+        editor.commit();
     }
 }

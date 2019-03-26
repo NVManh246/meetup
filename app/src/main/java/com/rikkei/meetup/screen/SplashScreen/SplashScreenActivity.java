@@ -12,21 +12,31 @@ import android.widget.Toast;
 
 import com.rikkei.meetup.R;
 import com.rikkei.meetup.screen.main.MainActivity;
+import com.rikkei.meetup.service.AlarmReceiver;
 import com.rikkei.meetup.ultis.StringUtils;
 
 public class SplashScreenActivity extends AppCompatActivity implements SplashScreenContract.View {
+
+    private SplashScreenContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        mPresenter = new SplashScreenPresenter(this);
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         );
+        boolean isRunFirstTime = StringUtils.isRunFirstTime(this);
+        if(!isRunFirstTime) {
+            mPresenter.saveNewsIfRunFirstTime();
+            StringUtils.saveIsRunFirstTime(this, true);
+        }
+        AlarmReceiver.setAlarm(this, false);
         String token = StringUtils.getToken(this);
         if (token != null) {
-            new SplashScreenPresenter(this).checkTokenExpired(token);
+            mPresenter.checkTokenExpired(token);
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override

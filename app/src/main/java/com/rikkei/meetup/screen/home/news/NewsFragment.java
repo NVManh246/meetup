@@ -78,7 +78,6 @@ public class NewsFragment extends Fragment implements NewsContract.View,
         } else {
             mPresenter.getListNewsDB(mPageIndex - 1, mPageSize);
         }
-        mPresenter.saveNewsDB();
     }
 
     @Override
@@ -151,6 +150,9 @@ public class NewsFragment extends Fragment implements NewsContract.View,
     @Override
     public void showEndData() {
         mNewsAdapter.removeItemNull();
+        if(mSwipeRefreshNews.isRefreshing()) {
+            mSwipeRefreshNews.setRefreshing(false);
+        }
         Toast.makeText(getContext(), R.string.end, Toast.LENGTH_SHORT).show();
     }
 

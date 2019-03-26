@@ -6,12 +6,14 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon_app"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon_app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -25,11 +27,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screen.main.MainActivity"/>
+        <activity android:name=".screen.main.MainActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".screen.EventDetail.EventDetailActivity"/>
         <activity android:name=".screen.search.SearchActivity"/>
         <activity android:name=".screen.list_events_by_category.ListEventActivity"/>
         <activity android:name=".screen.profile.EventStatusActivity"/>
+
+        <receiver android:name=".service.AlarmReceiver">
+            <intent-filter>
+                <action android:name="com.rikkie.intent.action.ALARM" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.UpdateJobIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
     </application>
 
 </manifest>

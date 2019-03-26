@@ -11,5 +11,6 @@ public interface SplashScreenContract {
 
     interface Presenter {
         void checkTokenExpired(String token);
+        void saveNewsIfRunFirstTime();
     }
 }
