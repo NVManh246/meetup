@@ -26,6 +26,8 @@ import com.rikkei.meetup.ultis.AnimUtils;
 import com.rikkei.meetup.ultis.NetworkUtils;
 import com.rikkei.meetup.ultis.StringUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, OnNetworkChangedListener {
 
@@ -90,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements
         switch (menuItem.getItemId()) {
             case R.id.menu_home:
                 showFragment(0);
+                if(!mHomeFragment.isHidden()) {
+                    EventBus.getDefault().post("");
+                }
                 break;
             case R.id.menu_near:
                 showFragment(1);

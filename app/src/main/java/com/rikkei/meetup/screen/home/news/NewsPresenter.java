@@ -38,7 +38,7 @@ public class NewsPresenter implements NewsContract.Presenter {
     }
 
     @Override
-    public void getListNews(int pageIndex, int pageSize) {
+    public void getListNews(final int pageIndex, final int pageSize) {
         Disposable disposable = mNewsRepository.getListNews(pageIndex, pageSize)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -57,7 +57,8 @@ public class NewsPresenter implements NewsContract.Presenter {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         mView.hideProgress();
-                        mView.showError();
+                        //mView.showError();
+                        getListNewsDB(pageIndex - 1, pageSize);
                         System.out.println(throwable.toString());
                     }
                 });

@@ -20,7 +20,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".screen.SplashScreen.SplashScreenActivity">
+        <activity android:name=".screen.SplashScreen.SplashScreenActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,11 +29,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".screen.main.MainActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".screen.EventDetail.EventDetailActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name=".screen.EventDetail.EventDetailActivity"/>
-        <activity android:name=".screen.search.SearchActivity"/>
-        <activity android:name=".screen.list_events_by_category.ListEventActivity"/>
-        <activity android:name=".screen.profile.EventStatusActivity"/>
+        <activity android:name=".screen.search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+        <activity android:name=".screen.list_events_by_category.ListEventActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+        <activity android:name=".screen.profile.EventStatusActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
 
         <receiver android:name=".service.AlarmReceiver">
             <intent-filter>

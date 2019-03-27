@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,9 @@ import com.rikkei.meetup.common.EndLessScrollListener;
 import com.rikkei.meetup.common.observer.Observer;
 import com.rikkei.meetup.data.model.news.News;
 import com.rikkei.meetup.ultis.NetworkUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +81,16 @@ public class NewsFragment extends Fragment implements NewsContract.View,
             mPresenter.getListNews(mPageIndex, mPageSize);
         } else {
             mPresenter.getListNewsDB(mPageIndex - 1, mPageSize);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser) {
+            EventBus.getDefault().register(this);
+        } else {
+            EventBus.getDefault().unregister(this);
         }
     }
 
@@ -189,5 +203,11 @@ public class NewsFragment extends Fragment implements NewsContract.View,
                 mIsLoadingError = false;
             }
         }
+    }
+
+    @Subscribe
+    public void onEvent(String s) {
+        mRecyclerNews.getLayoutManager().smoothScrollToPosition(mRecyclerNews,
+                new RecyclerView.State(), 0);
     }
 }

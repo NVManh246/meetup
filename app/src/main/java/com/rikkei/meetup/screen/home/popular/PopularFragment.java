@@ -23,6 +23,9 @@ import com.rikkei.meetup.screen.EventDetail.EventDetailActivity;
 import com.rikkei.meetup.ultis.StringUtils;
 import com.rikkei.meetup.ultis.NetworkUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +80,16 @@ public class PopularFragment extends Fragment implements PopularContract.View,
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser) {
+            EventBus.getDefault().register(this);
+        } else {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     private void setupRecyclerEvent() {
@@ -136,5 +149,11 @@ public class PopularFragment extends Fragment implements PopularContract.View,
                 mIsLoadingError = false;
             }
         }
+    }
+
+    @Subscribe
+    public void onEvent(String s) {
+        mRecyclerEvent.getLayoutManager().smoothScrollToPosition(mRecyclerEvent,
+                new RecyclerView.State(), 0);
     }
 }

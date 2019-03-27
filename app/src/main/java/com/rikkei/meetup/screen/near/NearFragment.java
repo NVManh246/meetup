@@ -4,12 +4,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
@@ -30,7 +33,12 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -134,6 +142,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onStart() {
+        mGoogleApiClient.connect();
         super.onStart();
     }
 
@@ -295,7 +304,6 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMyLocationButtonClick() {
         forcusMyLocation();
-
         return false;
     }
 
@@ -304,7 +312,6 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETTING_REQUEST_CODE) {
             if (checkLocationPermission()) {
-                Log.d("kiemtra", "ok");
                 mGoogleApiClient.connect();
                 mMapFragment.getMapAsync(this);
                 mPresenter.getNearEvents(mToken, RADIUS,
@@ -523,7 +530,7 @@ public class NearFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void update(int status) {
-        if(status == NetworkUtils.CONNECTED) {
+        if(status == NetworkUtils.CONNECTED && mEvents != null && mEvents.isEmpty()) {
             if(mCenterLocation != null) {
                 mPresenter.getNearEvents(mToken, RADIUS,
                         String.valueOf(mCenterLocation.getLongitude()),

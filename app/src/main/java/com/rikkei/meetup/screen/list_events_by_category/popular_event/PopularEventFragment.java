@@ -175,6 +175,9 @@ public class PopularEventFragment extends Fragment implements ListEventContract.
         if (mEvents.size() != 0) {
             mEventAdapter.removeItemNull();
         }
+        if(mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
     }
 
     @Override

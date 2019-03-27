@@ -148,20 +148,24 @@ public abstract class BaseEventAdapter extends RecyclerView.Adapter<RecyclerView
             } catch (ParseException e) {
             }
             if(event.getGoingCount() > 0) {
+                mImageJoinerCount.setVisibility(View.VISIBLE);
+                mTextJoinerCount.setVisibility(View.VISIBLE);
                 mTextJoinerCount.setText(String.valueOf(event.getGoingCount()));
             } else {
-                mImageJoinerCount.setVisibility(View.GONE);
-                mTextJoinerCount.setVisibility(View.GONE);
+                mImageJoinerCount.setVisibility(View.INVISIBLE);
+                mTextJoinerCount.setVisibility(View.INVISIBLE);
             }
 
             switch (event.getMyStatus()) {
                 case 0:
-                    mImageStatus.setImageResource(View.VISIBLE);
+                    mImageStatus.setVisibility(View.INVISIBLE);
                     break;
                 case Event.STATUS_GOING:
+                    mImageStatus.setVisibility(View.VISIBLE);
                     mImageStatus.setImageResource(R.drawable.ic_star_red_24dp);
                     break;
                 case Event.STATUS_WENT:
+                    mImageStatus.setVisibility(View.VISIBLE);
                     mImageStatus.setImageResource(R.drawable.ic_star_star_24dp);
                     break;
             }
